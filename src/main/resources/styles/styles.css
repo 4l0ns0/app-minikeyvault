@@ -1,0 +1,8 @@
+/*.button {
+    -fx-font-weight: bold;
+}*/
+
+.not-selection-allowed {
+    -fx-highlight-fill: null;
+	-fx-highlight-text-fill: null;
+}

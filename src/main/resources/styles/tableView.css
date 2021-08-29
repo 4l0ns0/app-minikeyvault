@@ -1,0 +1,7 @@
+#stackPane {	
+	
+  	-fx-background-repeat: no-repeat;
+  	-fx-background-position: right center;
+	-fx-font-size: 20.0;
+	-fx-font-weight: bold;
+}
