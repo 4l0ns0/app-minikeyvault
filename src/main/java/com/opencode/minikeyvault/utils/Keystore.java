@@ -1,10 +1,10 @@
 package com.opencode.minikeyvault.utils;
 
-import com.opencode.minikeyvault.model.Entry;
-import com.opencode.minikeyvault.model.TableData;
-import com.opencode.minikeyvault.repository.Db;
-import com.opencode.minikeyvault.repository.dao.DaoEntry;
-import com.opencode.minikeyvault.repository.dao.impl.DaoEntryImpl;
+import com.opencode.minikeyvault.domain.UserKey;
+import com.opencode.minikeyvault.model.IUserKeyModel;
+import com.opencode.minikeyvault.model.db.Db;
+import com.opencode.minikeyvault.model.impl.UserKeyModel;
+import com.opencode.minikeyvault.view.commons.TableData;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -87,10 +87,10 @@ public class Keystore {
 //    }
     
     
-    private static DaoEntry daoEntryImpl;
+    private static IUserKeyModel daoEntryImpl;
     
     static {
-        daoEntryImpl = new DaoEntryImpl();
+        daoEntryImpl = new UserKeyModel();
     }
     
     /**

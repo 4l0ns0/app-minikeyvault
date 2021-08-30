@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.GridPane?>
 
-<BorderPane fx:id="pnlInsUpdPanel" prefHeight="205.0" prefWidth="340.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.opencode.minikeyvault.controller.CtrlEntry">
+<BorderPane fx:id="bpnPrincipal" prefHeight="205.0" prefWidth="340.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.opencode.minikeyvault.view.UserKeyInsUpdView">
          <center>
             <VBox alignment="CENTER" spacing="5.0" BorderPane.alignment="CENTER">
                <children>

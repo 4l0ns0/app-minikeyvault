@@ -1,8 +1,7 @@
 package com.opencode.minikeyvault;
 
-import com.opencode.minikeyvault.repository.Db;
+import com.opencode.minikeyvault.model.db.Db;
 import com.opencode.minikeyvault.utils.Constants;
-import com.opencode.minikeyvault.utils.ImageFactory;
 import com.opencode.minikeyvault.utils.ResourceManager;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -28,19 +27,13 @@ public class MainApp extends Application {
     @Override
     public void start(Stage stage) throws Exception {
 
-        Parent root = FXMLLoader.load(ResourceManager.getFxView("Menu"));
-
-//        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Menu.fxml"));
-//        Parent root = loader.load();
-////
-//        CtrlMenu controller = loader.getController();
-//        controller.setStage(stage);
+        Parent root = FXMLLoader.load(ResourceManager.getFxView("UserKeyShowView"));
 
         Scene scene = new Scene(root);
         scene.getStylesheets().add("/styles/styles.css");
 
         stage.setTitle(Constants.APP_NAME);
-        stage.getIcons().add(ImageFactory.getApplicationIcon());
+        stage.getIcons().add(ResourceManager.getImage("app-icon.png"));
         stage.setScene(scene);
         stage.setAlwaysOnTop(true);
         stage.show();

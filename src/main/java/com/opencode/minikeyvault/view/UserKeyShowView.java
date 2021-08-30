@@ -1,22 +1,14 @@
-package com.opencode.minikeyvault.controller;
+package com.opencode.minikeyvault.view;
 
-import com.opencode.minikeyvault.model.TableData;
-import com.opencode.minikeyvault.service.Service;
-import com.opencode.minikeyvault.service.impl.ServiceImpl;
-import com.opencode.minikeyvault.utils.Constants;
-import com.opencode.minikeyvault.utils.ImageFactory;
 import com.opencode.minikeyvault.utils.ResourceManager;
+import com.opencode.minikeyvault.view.commons.TableData;
+import com.opencode.minikeyvault.viewmodel.UserKeyViewModel;
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
 import java.util.ResourceBundle;
-import java.util.stream.Collectors;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckMenuItem;
@@ -29,7 +21,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 /**
- * class: CtrlMenu. <br/>
+ * class: UserKeyShowView. <br/>
  * @author Henry Navarro <br/><br/>
  *          <u>Cambios</u>:<br/>
  *          <ul>
@@ -37,16 +29,13 @@ import javafx.stage.Stage;
  *          </ul>
  * @version 1.0
  */
-//@Slf4j
-public class CtrlMenu implements Initializable {
+public class UserKeyShowView implements Initializable {
 
-    private Service service;
-    
-    private List<TableData> lstData;
-    private ObservableList<TableData> observableList;
+    private final UserKeyViewModel viewModel = UserKeyViewModel.getInstance();
+
     private Stage parentStage;
 
-    @FXML BorderPane pnlMenuPanel;
+    @FXML BorderPane bpnPrincipal;
     @FXML CheckMenuItem chkAlwaysOnTop;
     @FXML TextField txtFilter;
     @FXML Button btnNew;
@@ -59,31 +48,26 @@ public class CtrlMenu implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        service = new ServiceImpl();
-
         chkAlwaysOnTop.setSelected(true);
         chkAlwaysOnTop.setOnAction(
                 e -> fixWindow(chkAlwaysOnTop.isSelected()));
 
+        txtFilter.textProperty().bindBidirectional(viewModel.filterProperty());
         txtFilter.textProperty().addListener(
-                (observable, oldValue, newValue) -> fillTable(newValue));
+                (observable, oldValue, newValue) -> viewModel.fillObservableList(newValue));
 
-        btnNew.setGraphic(ImageFactory.getImageView("action-create.png", 15));
+        btnNew.setGraphic(ResourceManager.getImageView("action-insert.png", 18));
         btnNew.setOnAction(e -> showInsUpdDialog(true));
-
+        
         tblColApplication.setCellValueFactory(new PropertyValueFactory<>("application"));
         tblColUserName.setCellValueFactory(new PropertyValueFactory<>("userName"));
         tblColPassword.setCellValueFactory(new PropertyValueFactory<>("password"));
         tblColActions.setCellValueFactory(new PropertyValueFactory<>("actions"));
 
-        lstData = service.retrieveData();
-        observableList = FXCollections.observableArrayList();
-        tblData.setItems(observableList);
-
-        fillTable(null);
+        tblData.setItems(viewModel.getObservableList());
 
     }
-
+    
     /**
      * Metodo que define si la ventana siempre se mostrará encima o no.
      * 
@@ -92,50 +76,27 @@ public class CtrlMenu implements Initializable {
     private void fixWindow(boolean keepOnTop) {
 
         if (parentStage == null) {
-            parentStage = (Stage) pnlMenuPanel.getScene().getWindow();
+            parentStage = (Stage) bpnPrincipal.getScene().getWindow();
         }
 
         parentStage.setAlwaysOnTop(keepOnTop);
     }
 
-    /**
-     * Metodo para cargar el observable (ObservableList) con la información 
-     * del Keystore capturada al iniciar el controlador.
-     * 
-     * @param paramFilter si null, se carga toda la informacion del keystore
-     *     en el observable. Caso contrario, se aplica el filtro indicado antes
-     *     de pasarlo al observable.
-     */
-    private void fillTable(String paramFilter) {
-
-        if (paramFilter != null) {
-            observableList.setAll(lstData.stream()
-                    .filter(e -> e.getApplication().toLowerCase()
-                            .contains(paramFilter.trim().toLowerCase()))
-                    .collect(Collectors.toList()));
-        } else {
-            observableList.setAll(lstData/*service.retrieveData()*/);
-        }
-
-    }
-    
     private void showInsUpdDialog(boolean forInsert) {
 
         try {
-//            Parent root = FXMLLoader.load(ResourceManager.getFxDialog("EntryInsUpd.fxml"));
+            FXMLLoader loader = new FXMLLoader(ResourceManager.getFxDialog("UserKeyInsUpdView"));
 
-            FXMLLoader loader = new FXMLLoader(ResourceManager.getFxDialog("EntryInsUpd"));
-
-            Scene scene = new Scene(loader.load()/*, 300, 200*/);
+            Scene scene = new Scene(loader.load());
             scene.getStylesheets().add("/styles/styles.css");
 
-            CtrlEntry ctrlEntry = loader./*<CtrlEntry>*/getController();
-            ctrlEntry.retrieve(this, observableList, null);
+//            UserKeyInsUpdView userKeyInsUpdView = loader.getController();
+//            userKeyInsUpdView.retrieve(this, null/*observableList*/, null);//TODO pasa el viewModel
 
             Stage stage = new Stage();
             stage.setTitle(forInsert ? "Nuevo Registro" : "Modificar Registro");
             stage.initModality(Modality.APPLICATION_MODAL);
-            stage.getIcons().add(ImageFactory.getApplicationIcon());
+            stage.getIcons().add(ResourceManager.getImage("app-icon.png"));
             stage.setScene(scene);
             stage.setAlwaysOnTop(true);
             stage.showAndWait();
@@ -143,11 +104,6 @@ public class CtrlMenu implements Initializable {
             e.printStackTrace();
         }
 
-    }
-
-    public void reloadDataNotification() {
-        lstData = service.retrieveData();
-        fillTable(txtFilter.getText());
     }
 
 }

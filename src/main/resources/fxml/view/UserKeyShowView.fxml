@@ -9,7 +9,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane fx:id="pnlMenuPanel" prefHeight="200.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.opencode.minikeyvault.controller.CtrlMenu">
+<BorderPane fx:id="bpnPrincipal" prefHeight="200.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.opencode.minikeyvault.view.UserKeyShowView">
 	<top>
 		<MenuBar prefHeight="0.0" prefWidth="600.0" BorderPane.alignment="CENTER">
 			<menus>
@@ -58,7 +58,7 @@
 						<TableColumn fx:id="tblColApplication" prefWidth="180.0" text="Aplicación" />
 						<TableColumn fx:id="tblColUserName" prefWidth="197.0" text="Usuario" />
 						<TableColumn fx:id="tblColPassword" prefWidth="222.0" text="Password" />
-						<TableColumn fx:id="tblColActions" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" resizable="false" sortable="false" text="[Actions]" />
+						<TableColumn fx:id="tblColActions" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" resizable="false" sortable="false" text="[Acciones]" />
 					</columns>
 					<VBox.margin>
 						<Insets />

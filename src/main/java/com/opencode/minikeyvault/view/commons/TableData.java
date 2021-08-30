@@ -1,6 +1,6 @@
-package com.opencode.minikeyvault.model;
+package com.opencode.minikeyvault.view.commons;
 
-import com.opencode.minikeyvault.utils.ImageFactory;
+import com.opencode.minikeyvault.utils.ResourceManager;
 import com.opencode.minikeyvault.utils.Utils;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -77,7 +77,7 @@ public class TableData {
      */
     private StackPane getDataPaneInstance(String value) {
 
-        ImageView imgCopyToClipboard = ImageFactory.getCopyToClipboardIcon();
+        ImageView imgCopyToClipboard = ResourceManager.getImageView("copy-to-clipboard.png", 13);
         imgCopyToClipboard.setVisible(false);
         imgCopyToClipboard.setMouseTransparent(true);
 
@@ -117,12 +117,12 @@ public class TableData {
         Button btnUpdate = new Button();
         btnUpdate.setTooltip(new Tooltip("Editar"));
         btnUpdate.setPadding(new Insets(2, 5, 2, 5));
-        btnUpdate.setGraphic(ImageFactory.getImageView("action-update.gif", 12));
+        btnUpdate.setGraphic(ResourceManager.getImageView("action-update.gif", 12));
         btnUpdate.setOnAction(e -> System.out.println("Se modifica " + this.id));
 
         Button btnDelete = new Button();
         btnDelete.setPadding(new Insets(2, 5, 2, 5));
-        btnDelete.setGraphic(ImageFactory.getImageView("action-delete.gif", 12));
+        btnDelete.setGraphic(ResourceManager.getImageView("action-delete.gif", 12));
         btnDelete.setOnAction(e -> System.out.println("Se elimina " + this.id));
 
         HBox hbox = new HBox();

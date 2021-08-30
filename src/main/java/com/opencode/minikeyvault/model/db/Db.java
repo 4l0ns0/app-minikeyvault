@@ -1,4 +1,4 @@
-package com.opencode.minikeyvault.repository;
+package com.opencode.minikeyvault.model.db;
 
 import com.opencode.minikeyvault.utils.ResourceManager;
 import java.io.File;
@@ -15,7 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.h2.tools.RunScript;
 
 /**
- * class: DB. <br/>
+ * class: Db. <br/>
  * 
  * @author Henry Navarro <br/>
  *         <br/>
