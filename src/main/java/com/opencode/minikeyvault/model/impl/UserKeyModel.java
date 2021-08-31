@@ -1,8 +1,8 @@
-package com.opencode.minikeyvault.repository.dao.impl;
+package com.opencode.minikeyvault.model.impl;
 
-import com.opencode.minikeyvault.model.Entry;
-import com.opencode.minikeyvault.repository.Db;
-import com.opencode.minikeyvault.repository.dao.DaoEntry;
+import com.opencode.minikeyvault.domain.UserKey;
+import com.opencode.minikeyvault.model.IUserKeyModel;
+import com.opencode.minikeyvault.model.db.Db;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 
-/** class: DaoEntryImpl. <br/>
+/** class: UserKeyModel. <br/>
  * @author Henry Navarro <br/><br/>
  *          <u>Cambios</u>:<br/>
  *          <ul>
@@ -19,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
  * @version 1.0
  */
 @Slf4j
-public class DaoEntryImpl implements DaoEntry {
+public class UserKeyModel implements IUserKeyModel {
 
     private static final String COL_ID = "id";
     private static final String COL_APPLICATION = "application";
@@ -31,18 +31,18 @@ public class DaoEntryImpl implements DaoEntry {
      * Devuelve todos los registros de la tabla desde la base de datos.
      */
     @Override
-    public List<Entry> getAll() {
+    public List<UserKey> getAll() {
 
-        List<Entry> lst = new ArrayList<>();
+        List<UserKey> lst = new ArrayList<>();
 
         ResultSet rs = null;
 
         try {
-            rs = Db.getStatement("select * from data")
+            rs = Db.getStatement("select * from data order by application")
                     .executeQuery();
 
             while (rs.next()) {
-                lst.add(new Entry(rs.getInt(COL_ID),
+                lst.add(new UserKey(rs.getInt(COL_ID),
                         rs.getString(COL_APPLICATION),
                         rs.getString(COL_DESCRIPTION),
                         rs.getString(COL_USERNAME),
@@ -62,21 +62,21 @@ public class DaoEntryImpl implements DaoEntry {
      * Devuelve el registro cuyo id se se indica como parametro.
      */
     @Override
-    public Entry getOne(int entryId) {
+    public UserKey getOne(int userKeyId) {
 
-        Entry entry = null;
+        UserKey userKey = null;
 
         PreparedStatement ps = null;
         ResultSet rs = null;
 
         try {
-            ps = Db.getStatement("select * from data where id = ?");
-            ps.setInt(1, entryId);
+            ps = Db.getStatement("select * from data where id = ? order by application");
+            ps.setInt(1, userKeyId);
 
             rs = ps.executeQuery();
 
             while (rs.next()) {
-                entry = new Entry(rs.getInt(COL_ID), rs.getString(COL_APPLICATION), 
+                userKey = new UserKey(rs.getInt(COL_ID), rs.getString(COL_APPLICATION), 
                         rs.getString(COL_DESCRIPTION), rs.getString(COL_USERNAME), 
                         rs.getString(COL_PASSWORD));
             }
@@ -87,14 +87,14 @@ public class DaoEntryImpl implements DaoEntry {
             Db.close(rs, true);
         }
 
-        return entry;
+        return userKey;
     }
 
     /**
      * Inserta el registro en la base de datos.
      */
     @Override
-    public Entry insert(Entry entry) {
+    public UserKey insert(UserKey userKey) {
 
         PreparedStatement ps = null;
         int result = 0;
@@ -102,17 +102,17 @@ public class DaoEntryImpl implements DaoEntry {
         try {
             ps = Db.getStatement("insert into data (application, description, "
                     + "username, password) values (?, ?, ?, ?)");
-            ps.setString(1, entry.getApplication());
-            ps.setString(2, entry.getDescription());
-            ps.setString(3, entry.getUserName());
-            ps.setString(4, entry.getPassword());
+            ps.setString(1, userKey.getApplication());
+            ps.setString(2, userKey.getDescription());
+            ps.setString(3, userKey.getUserName());
+            ps.setString(4, userKey.getPassword());
 
             result = ps.executeUpdate();
 
             ResultSet keys = ps.getGeneratedKeys();
 
             if (keys.next() && result != 0) {
-                entry.setId(keys.getInt(1));
+                userKey.setId(keys.getInt(1));
             }
         } catch (SQLException e) {
             log.error("Ocurrieron errores al insertar el registro "
@@ -121,11 +121,11 @@ public class DaoEntryImpl implements DaoEntry {
             Db.close(ps, true);
         }
 
-        return result == 1 ? entry : null;
+        return result == 1 ? userKey : null;
     }
 
     @Override
-    public Entry update(Entry entry) {
+    public UserKey update(UserKey userKey) {
 
         PreparedStatement ps = null;
         int result = 0;
@@ -133,11 +133,11 @@ public class DaoEntryImpl implements DaoEntry {
         try {
             ps = Db.getStatement("update data set application = ?, description = ?, "
                     + "username = ?, password = ? where id = ?");
-            ps.setString(1, entry.getApplication());
-            ps.setString(2, entry.getDescription());
-            ps.setString(3, entry.getUserName());
-            ps.setString(4, entry.getPassword());
-            ps.setInt(5, entry.getId());
+            ps.setString(1, userKey.getApplication());
+            ps.setString(2, userKey.getDescription());
+            ps.setString(3, userKey.getUserName());
+            ps.setString(4, userKey.getPassword());
+            ps.setInt(5, userKey.getId());
 
             result = ps.executeUpdate();
         } catch (SQLException e) {
@@ -147,18 +147,18 @@ public class DaoEntryImpl implements DaoEntry {
             Db.close(ps, true);
         }
 
-        return result == 1 ? entry : null;
+        return result == 1 ? userKey : null;
     }
 
     @Override
-    public boolean delete(int recordId) {
+    public boolean delete(int userKeyId) {
 
         PreparedStatement ps = null;
         int result = 0;
 
         try {
             ps = Db.getStatement("delete from data where id = ?");
-            ps.setInt(1, recordId);
+            ps.setInt(1, userKeyId);
 
             result = ps.executeUpdate();
         } catch (SQLException e) {

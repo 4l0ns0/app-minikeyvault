@@ -1,4 +1,4 @@
-package com.opencode.minikeyvault.model;
+package com.opencode.minikeyvault.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * class: Entry. <br/>
+ * class: UserKey. <br/>
  * @author Henry Navarro <br/><br/>
  *          <u>Cambios</u>:<br/>
  *          <ul>
@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Entry {
+public class UserKey {
 
     private int id;
     private String application;
