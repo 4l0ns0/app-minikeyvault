@@ -38,7 +38,7 @@ public class UserKeyModel implements IUserKeyModel {
         ResultSet rs = null;
 
         try {
-            rs = Db.getStatement("select * from data")
+            rs = Db.getStatement("select * from data order by application")
                     .executeQuery();
 
             while (rs.next()) {

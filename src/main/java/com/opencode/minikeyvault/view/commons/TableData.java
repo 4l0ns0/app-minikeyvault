@@ -1,13 +1,15 @@
 package com.opencode.minikeyvault.view.commons;
 
-import com.opencode.minikeyvault.utils.ResourceManager;
+import com.opencode.minikeyvault.domain.UserKey;
+import com.opencode.minikeyvault.utils.Constants;
 import com.opencode.minikeyvault.utils.Utils;
+import com.opencode.minikeyvault.view.UserKeyShowView;
+import com.opencode.minikeyvault.viewmodel.UserKeyViewModel.OperationType;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
-import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Background;
@@ -15,6 +17,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Getter;
 import lombok.Setter;
 
 /** class: TableData. <br/>
@@ -28,6 +31,10 @@ import lombok.Setter;
 @Data
 public class TableData {
 
+    @Getter(value = AccessLevel.NONE)
+    @Setter(value = AccessLevel.NONE)
+    private UserKey userKey;
+
     private int id;
     private String application;
     private String description;
@@ -38,24 +45,23 @@ public class TableData {
     @Setter(value = AccessLevel.NONE)
     private StackPane password;
 
+    @Setter(value = AccessLevel.NONE)
     private HBox actions;
 
-    /** Constructor de la clase.
+    /**
+     * Constructor de la clase.
      * 
-     * @param id identificador del registro.
-     * @param application nombre de la aplicación.
-     * @param description descripcion de ayuda.
-     * @param userName nombre de usuario.
-     * @param password password asociado al usuario.
+     * @param userKey instancia del UserKey.
      */
-    public TableData(int id, String application, String description, String userName,
-            String password) {
+    public TableData(UserKey userKey) {
 
-        this.id = id;
-        this.application = application;
-        this.description = description;
-        this.userName = getDataPaneInstance(userName);
-        this.password = getDataPaneInstance(password);
+        this.userKey = userKey;
+
+        this.id = userKey.getId();
+        this.application = userKey.getApplication();
+        this.description = userKey.getDescription();
+        this.userName = getDataPaneInstance(userKey.getUserName());
+        this.password = getDataPaneInstance(userKey.getPassword());
         this.actions = getActionPaneInstance();
 
     }
@@ -77,9 +83,12 @@ public class TableData {
      */
     private StackPane getDataPaneInstance(String value) {
 
-        ImageView imgCopyToClipboard = ResourceManager.getImageView("copy-to-clipboard.png", 13);
-        imgCopyToClipboard.setVisible(false);
-        imgCopyToClipboard.setMouseTransparent(true);
+        ImageView imgCopy = new ImageView(Constants.IMG_COPY_TO_CLIPBOARD);
+        imgCopy.setFitHeight(14);
+        imgCopy.setPreserveRatio(true);
+        imgCopy.setVisible(false);
+        imgCopy.setOpacity(0.5);
+        imgCopy.setMouseTransparent(true);
 
         PasswordField pwdControl = new PasswordField();
         pwdControl.setText(value);
@@ -89,8 +98,8 @@ public class TableData {
         pwdControl.setCursor(Cursor.DEFAULT);
         pwdControl.getStyleClass().add("not-selection-allowed");
 
-        pwdControl.setOnMouseEntered(e -> imgCopyToClipboard.setVisible(true));
-        pwdControl.setOnMouseExited(e -> imgCopyToClipboard.setVisible(false));
+        pwdControl.setOnMouseEntered(e -> imgCopy.setVisible(true));
+        pwdControl.setOnMouseExited(e -> imgCopy.setVisible(false));
         pwdControl.setOnMouseClicked(e -> {
             if (e.getButton().equals(MouseButton.PRIMARY)
                     && e.getClickCount() == 2) {
@@ -99,31 +108,39 @@ public class TableData {
         });
 
         StackPane stackPane = new StackPane();
-        stackPane.getChildren().addAll(pwdControl, imgCopyToClipboard);
+        stackPane.getChildren().addAll(pwdControl, imgCopy);
 
-        StackPane.setAlignment(imgCopyToClipboard, Pos.CENTER_RIGHT);
+        StackPane.setAlignment(imgCopy, Pos.CENTER_RIGHT);
 
         return stackPane;
     }
 
     /**
-     * Genera una nueva instancia de un HBox, el cual contien dos Buttons 
+     * Genera una nueva instancia de un HBox, el cual contien los botones 
      * (edit / delete) a colocar en la columna de acciones.
      * 
      * @return nueva instancia de HBox.
      */
     private HBox getActionPaneInstance() {
 
+        ImageView imgEdit = new ImageView(Constants.IMG_UPDATE);
+        imgEdit.setFitHeight(12);
+        imgEdit.setPreserveRatio(true);
+
         Button btnUpdate = new Button();
-        btnUpdate.setTooltip(new Tooltip("Editar"));
         btnUpdate.setPadding(new Insets(2, 5, 2, 5));
-        btnUpdate.setGraphic(ResourceManager.getImageView("action-update.gif", 12));
-        btnUpdate.setOnAction(e -> System.out.println("Se modifica " + this.id));
+        btnUpdate.setGraphic(imgEdit);
+        btnUpdate.setOnAction(e -> UserKeyShowView.showInsUpdDialog(
+                OperationType.UPDATE, this.userKey));
+
+        ImageView imgDelete = new ImageView(Constants.IMG_DELETE);
+        imgDelete.setFitHeight(12);
+        imgDelete.setPreserveRatio(true);
 
         Button btnDelete = new Button();
         btnDelete.setPadding(new Insets(2, 5, 2, 5));
-        btnDelete.setGraphic(ResourceManager.getImageView("action-delete.gif", 12));
-        btnDelete.setOnAction(e -> System.out.println("Se elimina " + this.id));
+        btnDelete.setGraphic(imgDelete);
+        btnDelete.setOnAction(e -> UserKeyShowView.showDeleteDialog(userKey));
 
         HBox hbox = new HBox();
         hbox.setSpacing(5);
@@ -132,5 +149,5 @@ public class TableData {
 
         return hbox;
     }
-
+    
 }

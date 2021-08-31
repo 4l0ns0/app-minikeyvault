@@ -17,8 +17,16 @@ public class UserKeyConverter {
         throw new IllegalStateException(UserKeyConverter.class.getName());
     }
 
+    /**
+     * Metodo para mapear los atributos (Properties) enlazados a los 
+     * controles del dialogo, hacia el objeto que será enviado a la clase model.
+     * 
+     * @param viewModel instancia del viewModel.
+     * @return instancia del objeto
+     */
     public static UserKey convert(UserKeyViewModel viewModel) {
-        return new UserKey(0, viewModel.applicationProperty().get(), 
+        return new UserKey(viewModel.idProperty().get(), 
+                viewModel.applicationProperty().get(), 
                 viewModel.descriptionProperty().get(), 
                 viewModel.userNameProperty().get(),
                 viewModel.passwordProperty().get());

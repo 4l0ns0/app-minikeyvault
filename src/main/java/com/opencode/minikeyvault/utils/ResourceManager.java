@@ -3,7 +3,6 @@ package com.opencode.minikeyvault.utils;
 import java.io.InputStream;
 import java.net.URL;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 
 /** class: ResourceManager. <br/>
  * @author Henry Navarro <br/><br/>
@@ -15,10 +14,10 @@ import javafx.scene.image.ImageView;
  */
 public class ResourceManager {
 
-    private static final String IMAGES_DIR = "images";
-    private static final String FXMLVIEWS_DIR = "fxml/view";
-    private static final String FXMLDIALOGS_DIR = "fxml/dialog";
-    private static final String SCRIPTS_DIR = "scripts";
+    private static final String DIR_IMAGES = "images";
+    private static final String DIR_FXMLVIEWS = "fxml/view";
+    private static final String DIR_FXMLDIALOGS = "fxml/dialog";
+    private static final String DIR_SCRIPTS = "scripts";
 
     private ResourceManager() {
         throw new IllegalStateException(ResourceManager.class.getName());
@@ -34,7 +33,7 @@ public class ResourceManager {
 
         Image image = null;
 
-        try (InputStream inputStream = getResourceAsStream(IMAGES_DIR, name);) {
+        try (InputStream inputStream = getResourceAsStream(DIR_IMAGES, name);) {
             image = new Image(inputStream);
         } catch (Exception e) {
             e.printStackTrace();
@@ -44,35 +43,13 @@ public class ResourceManager {
     }
 
     /**
-     * Devuelve un objeto ImageView con la imagen y tamaño solicitado.
-     * 
-     * @param name nombre de la imagen (Ubicada en la carpera resource).
-     * @param size tamaño en pixeles para la imagen.
-     * @return instancia de ImageView con la imagen indicada.
-     */
-    public static ImageView getImageView(String name, int size) {
-
-        Image image = getImage(name);
-
-        if (image != null) {
-            ImageView imageView = new ImageView(image);
-            imageView.setFitHeight(size);
-            imageView.setPreserveRatio(true);
-
-            return imageView;
-        }
-
-        return null;
-    }
-
-    /**
      * Devuelve la referencia al archivo (FXML) solicitado.
      * 
      * @param name nombre del archivo (Sin extensión).
      * @return referencia al archivo.
      */
     public static URL getFxDialog(String name) {
-        return getResource(FXMLDIALOGS_DIR, name + ".fxml");
+        return getResource(DIR_FXMLDIALOGS, name + ".fxml");
     }
 
     /**
@@ -81,7 +58,7 @@ public class ResourceManager {
      * @return referencia al archivo.
      */
     public static URL getFxView(String name) {
-        return getResource(FXMLVIEWS_DIR, name + ".fxml");
+        return getResource(DIR_FXMLVIEWS, name + ".fxml");
     }
 
     /**
@@ -91,7 +68,7 @@ public class ResourceManager {
      * @return archivo.
      */
     public static InputStream getScriptFile(String name) {
-        return getResourceAsStream(SCRIPTS_DIR, name);
+        return getResourceAsStream(DIR_SCRIPTS, name);
     }
 
     private static InputStream getResourceAsStream(String dir, String name) {

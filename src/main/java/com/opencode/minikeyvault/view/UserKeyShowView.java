@@ -1,21 +1,29 @@
 package com.opencode.minikeyvault.view;
 
+import com.opencode.minikeyvault.domain.UserKey;
+import com.opencode.minikeyvault.utils.Constants;
 import com.opencode.minikeyvault.utils.ResourceManager;
 import com.opencode.minikeyvault.view.commons.TableData;
 import com.opencode.minikeyvault.viewmodel.UserKeyViewModel;
+import com.opencode.minikeyvault.viewmodel.UserKeyViewModel.OperationType;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -56,9 +64,13 @@ public class UserKeyShowView implements Initializable {
         txtFilter.textProperty().addListener(
                 (observable, oldValue, newValue) -> viewModel.fillObservableList(newValue));
 
-        btnNew.setGraphic(ResourceManager.getImageView("action-insert.png", 18));
-        btnNew.setOnAction(e -> showInsUpdDialog(true));
-        
+        ImageView imgInsert = new ImageView(Constants.IMG_INSERT);
+        imgInsert.setFitHeight(18);
+        imgInsert.setPreserveRatio(true);
+
+        btnNew.setGraphic(imgInsert);
+        btnNew.setOnAction(e -> showInsUpdDialog(OperationType.INSERT, null));
+
         tblColApplication.setCellValueFactory(new PropertyValueFactory<>("application"));
         tblColUserName.setCellValueFactory(new PropertyValueFactory<>("userName"));
         tblColPassword.setCellValueFactory(new PropertyValueFactory<>("password"));
@@ -67,7 +79,11 @@ public class UserKeyShowView implements Initializable {
         tblData.setItems(viewModel.getObservableList());
 
     }
-    
+
+    public void setStage(Stage stage) {
+        parentStage = stage;
+    }
+
     /**
      * Metodo que define si la ventana siempre se mostrará encima o no.
      * 
@@ -80,9 +96,21 @@ public class UserKeyShowView implements Initializable {
         }
 
         parentStage.setAlwaysOnTop(keepOnTop);
+
     }
 
-    private void showInsUpdDialog(boolean forInsert) {
+    /**
+     * Metodo para cargar en el Stage el dialogo (UserKeyInsUpdView) el cual es 
+     * empleado para crear o modificar un UserKey.
+     * 
+     * @param operationType tipo de operacion (OperationType.INSERT / OperationType.UPDATE) 
+     *     que se va a ejecutar.
+     * @param userKey instancia del UserKey en caso el tipo de operación se OperationType.UPDATE. 
+     *     Null en caso la operación sea OperationType.INSERT.
+     */
+    public static void showInsUpdDialog(OperationType operationType, UserKey userKey) {
+
+        UserKeyViewModel.getInstance().setOperationType(operationType, userKey);
 
         try {
             FXMLLoader loader = new FXMLLoader(ResourceManager.getFxDialog("UserKeyInsUpdView"));
@@ -90,18 +118,43 @@ public class UserKeyShowView implements Initializable {
             Scene scene = new Scene(loader.load());
             scene.getStylesheets().add("/styles/styles.css");
 
-//            UserKeyInsUpdView userKeyInsUpdView = loader.getController();
-//            userKeyInsUpdView.retrieve(this, null/*observableList*/, null);//TODO pasa el viewModel
-
             Stage stage = new Stage();
-            stage.setTitle(forInsert ? "Nuevo Registro" : "Modificar Registro");
+            stage.setTitle(operationType == OperationType.INSERT 
+                    ? "Nuevo Registro" : "Actualizar Registro");
             stage.initModality(Modality.APPLICATION_MODAL);
-            stage.getIcons().add(ResourceManager.getImage("app-icon.png"));
+            stage.getIcons().add(Constants.IMG_APP_ICON);
             stage.setScene(scene);
             stage.setAlwaysOnTop(true);
             stage.showAndWait();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+
+    }
+
+    /**
+     * Metodo para cargar en el Stage el dialogo (UserKeyInsUpdView) el cual es 
+     * empleado para crear o modificar un UserKey.
+     * 
+     * @param userKey instancia del UserKey.
+     */
+    public static void showDeleteDialog(UserKey userKey) {
+
+        UserKeyViewModel viewModel = UserKeyViewModel.getInstance();
+        viewModel.setOperationType(OperationType.DELETE, userKey);
+
+        Alert alert = new Alert(AlertType.CONFIRMATION);
+        alert.setTitle("Eliminar Registro");
+        alert.setHeaderText(null);
+        alert.setContentText("Está seguro que desea eliminar el registro?");
+
+        Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+        stage.getIcons().add(Constants.IMG_APP_ICON);
+
+        Optional<ButtonType> result = alert.showAndWait();
+
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            viewModel.delete();
         }
 
     }

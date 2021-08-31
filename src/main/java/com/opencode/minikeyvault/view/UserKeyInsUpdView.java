@@ -1,6 +1,6 @@
 package com.opencode.minikeyvault.view;
 
-import com.opencode.minikeyvault.utils.ResourceManager;
+import com.opencode.minikeyvault.utils.Constants;
 import com.opencode.minikeyvault.viewmodel.UserKeyViewModel;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -10,6 +10,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
@@ -43,24 +44,35 @@ public class UserKeyInsUpdView implements Initializable {
         txtUserName.textProperty().bindBidirectional(viewModel.userNameProperty());
         txtPassword.textProperty().bindBidirectional(viewModel.passwordProperty());
 
-        btnSave.setGraphic(ResourceManager.getImageView("option-ok.png", 15));
+        ImageView imgOk = new ImageView(Constants.IMG_OK);
+        imgOk.setFitHeight(15);
+        imgOk.setPreserveRatio(true);
+
+        btnSave.setGraphic(imgOk);
         btnSave.setOnAction(this::save);
 
-        btnCancel.setGraphic(ResourceManager.getImageView("option-cancel.png", 15));
+        ImageView imgCancel = new ImageView(Constants.IMG_CANCEL);
+        imgCancel.setFitHeight(15);
+        imgCancel.setPreserveRatio(true);
+
+        btnCancel.setGraphic(imgCancel);
         btnCancel.setOnAction(this::close);
 
     }
 
     private void save(ActionEvent event) {
 
-        viewModel.save(true);
+        viewModel.insUpd();
         close(null);
 
     }
 
     private void close(ActionEvent event) {
+
+        viewModel.clean();
         Stage stage = (Stage) bpnPrincipal.getScene().getWindow();
         stage.close();
+
     }
 
 }

@@ -1,5 +1,6 @@
 package com.opencode.minikeyvault.viewmodel;
 
+import com.opencode.minikeyvault.domain.UserKey;
 import com.opencode.minikeyvault.model.IUserKeyModel;
 import com.opencode.minikeyvault.model.impl.UserKeyModel;
 import com.opencode.minikeyvault.view.commons.TableData;
@@ -28,6 +29,11 @@ public class UserKeyViewModel {
 
     private static UserKeyViewModel instance;
 
+    /**
+     * Metodo para obtener la instancia de clase.
+     * 
+     * @return instancia de la clase.
+     */
     @Synchronized
     public static UserKeyViewModel getInstance() {
 
@@ -50,6 +56,21 @@ public class UserKeyViewModel {
     private StringProperty userName = new SimpleStringProperty("");
     private StringProperty password = new SimpleStringProperty("");
 
+    /**
+     * class: OperationType. <br/>
+     * @author Henry Navarro <br/><br/>
+     *          <u>Cambios</u>:<br/>
+     *          <ul>
+     *          <li>2021-08-30 Creación del proyecto.</li>
+     *          </ul>
+     * @version 1.0
+     */
+    public enum OperationType {
+        INSERT, UPDATE, DELETE 
+    }
+
+    private OperationType operationType;
+
     private UserKeyViewModel() {
         fillDataList();
         fillObservableList(null);
@@ -63,15 +84,17 @@ public class UserKeyViewModel {
      */
     public void fillObservableList(String filter) {
 
-        observableList.setAll(lstData.stream().filter(e -> {
-            if (filter != null) {
-                return e.getApplication().toLowerCase().contains(filter.toLowerCase());
-            }
+        observableList.setAll(lstData.stream()
+                .filter(e -> {
+                    if (filter != null) {
+                        return e.getApplication().toLowerCase()
+                                .contains(filter.toLowerCase());
+                    }
 
-            return true;
-        })
-        .sorted(Comparator.comparing(TableData::getApplication))
-        .collect(Collectors.toList()));
+                    return true;
+                })
+                .sorted(Comparator.comparing(TableData::getApplication))
+                .collect(Collectors.toList()));
 
     }
 
@@ -81,34 +104,86 @@ public class UserKeyViewModel {
     private void fillDataList() {
 
         lstData = userKeyModel
-                .getAll().stream().map(e -> new TableData(e.getId(), e.getApplication(),
-                        e.getDescription(), e.getUserName(), e.getPassword()))
+                .getAll().stream().map(TableData::new)
                 .collect(Collectors.toList());
 
     }
 
-    public void save(boolean isNew) {
+    /**
+     * Define el tipo de operación a realizar.
+     * 
+     * @param operationType tipo de operacion (OperationType.INSERT, 
+     *     OperationType.UPDATE, OperationType.DELETE)
+     * @param userKey instancia del UserKey en caso el tipo de operación se OperationType.UPDATE 
+     *     o OperationType.DELETE. Null en caso la operación sea OperationType.INSERT.
+     */
+    public void setOperationType(OperationType operationType, UserKey userKey) {
 
-        if (isNew) {
-            userKeyModel.insert(UserKeyConverter.convert(this));
-        } else {
-            userKeyModel.update(UserKeyConverter.convert(this));
+        this.operationType = operationType;
+
+        if (operationType != OperationType.INSERT && userKey != null) {
+            this.id.set(userKey.getId());
+            this.application.set(userKey.getApplication());
+            this.description.set(userKey.getDescription());
+            this.userName.set(userKey.getUserName());
+            this.password.set(userKey.getPassword());
         }
 
-        reset();
-        fillDataList();
-        fillObservableList(filterProperty().get());
     }
 
-    public boolean delete(int userKeyId) {
-        return userKeyModel.delete(userKeyId);
+    /**
+     * Metodo para guardar los cambios realizados en las operaciones
+     * de creación y modificación de registros.
+     */
+    public void insUpd() {
+
+        switch (operationType) {
+            case INSERT:
+                userKeyModel.insert(UserKeyConverter.convert(this));
+                break;
+            case UPDATE:
+                userKeyModel.update(UserKeyConverter.convert(this));
+                break;
+            default:
+                break;
+        }
+
+        updateReference();
+
     }
 
-    private void reset() {
+    /**
+     * Metodo para eliminar un registro.
+     */
+    public void delete() {
+
+        userKeyModel.delete(UserKeyConverter.convert(this).getId());
+        updateReference();
+
+    }
+    
+    /**
+     * Metodo para limpiar las referencias de los properties.
+     */
+    public void clean() {
+
+        id.set(0);
         application.set("");
         description.set("");
         userName.set("");
         password.set("");
+
+    }
+
+    /**
+     * Actualiza los objetos referenciados desde la capa de la vista.
+     */
+    private void updateReference() {
+
+        fillDataList();
+        fillObservableList(filterProperty().get());
+        clean();
+
     }
     
     public ObservableList<TableData> getObservableList() {

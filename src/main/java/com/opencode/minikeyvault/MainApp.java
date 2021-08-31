@@ -29,11 +29,16 @@ public class MainApp extends Application {
 
         Parent root = FXMLLoader.load(ResourceManager.getFxView("UserKeyShowView"));
 
+        //FXMLLoader loader = new FXMLLoader(ResourceManager.getFxView("UserKeyShowView"));
+        //Parent root = loader.load();
+        //UserKeyShowView controller = loader.getController();
+        //controller.setStage(stage);
+
         Scene scene = new Scene(root);
         scene.getStylesheets().add("/styles/styles.css");
 
         stage.setTitle(Constants.APP_NAME);
-        stage.getIcons().add(ResourceManager.getImage("app-icon.png"));
+        stage.getIcons().add(Constants.IMG_APP_ICON);
         stage.setScene(scene);
         stage.setAlwaysOnTop(true);
         stage.show();
