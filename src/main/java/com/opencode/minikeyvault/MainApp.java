@@ -2,7 +2,9 @@ package com.opencode.minikeyvault;
 
 import com.opencode.minikeyvault.model.db.Db;
 import com.opencode.minikeyvault.utils.Constants;
+import com.opencode.minikeyvault.utils.ImageFactory;
 import com.opencode.minikeyvault.utils.ResourceManager;
+import com.opencode.minikeyvault.view.UserKeyShowView;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -27,20 +29,18 @@ public class MainApp extends Application {
     @Override
     public void start(Stage stage) throws Exception {
 
-        Parent root = FXMLLoader.load(ResourceManager.getFxView("UserKeyShowView"));
+        FXMLLoader loader = new FXMLLoader(ResourceManager.getFxView("UserKeyShowView"));
+        Parent root = loader.load();
 
-        //FXMLLoader loader = new FXMLLoader(ResourceManager.getFxView("UserKeyShowView"));
-        //Parent root = loader.load();
-        //UserKeyShowView controller = loader.getController();
-        //controller.setStage(stage);
+        UserKeyShowView view = loader.getController();
+        view.setStage(stage);
 
         Scene scene = new Scene(root);
         scene.getStylesheets().add("/styles/styles.css");
-
         stage.setTitle(Constants.APP_NAME);
-        stage.getIcons().add(Constants.IMG_APP_ICON);
+        stage.getIcons().add(ImageFactory.IMG_APP_ICON);
         stage.setScene(scene);
-        stage.setAlwaysOnTop(true);
+        stage.setResizable(false);
         stage.show();
 
     }

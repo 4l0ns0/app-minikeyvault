@@ -5,19 +5,19 @@ import com.opencode.minikeyvault.model.IUserKeyModel;
 import com.opencode.minikeyvault.model.impl.UserKeyModel;
 import com.opencode.minikeyvault.view.commons.TableData;
 import com.opencode.minikeyvault.viewmodel.converter.UserKeyConverter;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
 import java.util.stream.Collectors;
+import javafx.animation.PauseTransition;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.util.Duration;
 import lombok.Synchronized;
 
-/** class: UserKeyViewModel. <br/>
+/** 
+ * class: UserKeyViewModel. <br/>
  * @author Henry Navarro <br/><br/>
  *          <u>Cambios</u>:<br/>
  *          <ul>
@@ -46,15 +46,16 @@ public class UserKeyViewModel {
 
     private IUserKeyModel userKeyModel = new UserKeyModel();
 
-    private List<TableData> lstData = new ArrayList<>();
     private ObservableList<TableData> observableList = FXCollections.observableArrayList();
-    private StringProperty filter = new SimpleStringProperty("");
 
     private IntegerProperty id = new SimpleIntegerProperty(0);
     private StringProperty application = new SimpleStringProperty("");
     private StringProperty description = new SimpleStringProperty("");
     private StringProperty userName = new SimpleStringProperty("");
     private StringProperty password = new SimpleStringProperty("");
+
+    private StringProperty filter = new SimpleStringProperty("");
+    private StringProperty userMessage = new SimpleStringProperty("");
 
     /**
      * class: OperationType. <br/>
@@ -71,8 +72,10 @@ public class UserKeyViewModel {
 
     private OperationType operationType;
 
+    /**
+     * Constructor.
+     */
     private UserKeyViewModel() {
-        fillDataList();
         fillObservableList(null);
     }
 
@@ -84,28 +87,10 @@ public class UserKeyViewModel {
      */
     public void fillObservableList(String filter) {
 
-        observableList.setAll(lstData.stream()
-                .filter(e -> {
-                    if (filter != null) {
-                        return e.getApplication().toLowerCase()
-                                .contains(filter.toLowerCase());
-                    }
-
-                    return true;
-                })
-                .sorted(Comparator.comparing(TableData::getApplication))
-                .collect(Collectors.toList()));
-
-    }
-
-    /**
-     * Se capturan todos los registros desde la base de datos.
-     */
-    private void fillDataList() {
-
-        lstData = userKeyModel
-                .getAll().stream().map(TableData::new)
-                .collect(Collectors.toList());
+        observableList.setAll(userKeyModel
+              .getAll(filter).stream()
+              .map(TableData::new)
+              .collect(Collectors.toList()));
 
     }
 
@@ -137,18 +122,27 @@ public class UserKeyViewModel {
      */
     public void insUpd() {
 
+        String message = "Ocurrió un error. Revise el log para ver el detalle.";
+
         switch (operationType) {
             case INSERT:
-                userKeyModel.insert(UserKeyConverter.convert(this));
+                if (userKeyModel.insert(UserKeyConverter.convert(this)) != null) {
+                    message = "El registro de creó correctamente.";
+                }
+
                 break;
             case UPDATE:
-                userKeyModel.update(UserKeyConverter.convert(this));
+                if (userKeyModel.update(UserKeyConverter.convert(this)) != null) {
+                    message = "El registro de modificó correctamente.";
+                }
+
                 break;
             default:
                 break;
         }
 
         updateReference();
+        setUserMessage(message);
 
     }
 
@@ -157,8 +151,24 @@ public class UserKeyViewModel {
      */
     public void delete() {
 
-        userKeyModel.delete(UserKeyConverter.convert(this).getId());
+        String message = "Ocurrió un error. Revise el log para ver el detalle.";
+
+        if (userKeyModel.delete(UserKeyConverter.convert(this).getId())) {
+            message = "El registro se eliminó correctamente";
+        }
+
         updateReference();
+        setUserMessage(message);
+
+    }
+
+    private void setUserMessage(String message) {
+
+        userMessage.set(message);
+
+        PauseTransition visiblePause = new PauseTransition(Duration.seconds(8));
+        visiblePause.setOnFinished(event -> userMessage.set(""));
+        visiblePause.play();
 
     }
     
@@ -180,7 +190,6 @@ public class UserKeyViewModel {
      */
     private void updateReference() {
 
-        fillDataList();
         fillObservableList(filterProperty().get());
         clean();
 
@@ -214,4 +223,8 @@ public class UserKeyViewModel {
         return password;
     }
 
+    public StringProperty getUserMessage() {
+        return userMessage;
+    }
+    
 }

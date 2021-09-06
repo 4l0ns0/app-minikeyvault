@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.text.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.GridPane?>
 
-<BorderPane fx:id="bpnPrincipal" prefHeight="205.0" prefWidth="340.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.opencode.minikeyvault.view.UserKeyInsUpdView">
+<BorderPane fx:id="bpnPrincipal" prefHeight="210.0" prefWidth="508.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.opencode.minikeyvault.view.UserKeyInsUpdView">
          <center>
             <VBox alignment="CENTER" spacing="5.0" BorderPane.alignment="CENTER">
                <children>
@@ -14,48 +15,59 @@
                      <columnConstraints>
                         <ColumnConstraints halignment="RIGHT" hgrow="NEVER" />
                         <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" />
+                  <ColumnConstraints halignment="RIGHT" hgrow="NEVER" />
                      </columnConstraints>
                      <rowConstraints>
                         <RowConstraints />
                         <RowConstraints />
                         <RowConstraints />
-                        <RowConstraints />
+                        <RowConstraints valignment="CENTER" />
                      </rowConstraints>
                      <children>
-                        <Label text="Aplicación:">
+                        <Label text="Aplicación*">
                      <GridPane.margin>
                         <Insets left="10.0" />
                      </GridPane.margin></Label>
-                        <TextField fx:id="txtApplication" GridPane.columnIndex="1">
+                        <TextField fx:id="txtApplication" GridPane.columnIndex="1" GridPane.columnSpan="2">
                            <GridPane.margin>
                               <Insets bottom="5.0" left="8.0" right="10.0" top="5.0" />
                            </GridPane.margin>
                         </TextField>
-                        <TextField fx:id="txtDescription" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                        <TextField fx:id="txtDescription" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1">
                            <GridPane.margin>
                               <Insets bottom="5.0" left="8.0" right="10.0" top="5.0" />
                            </GridPane.margin>
                         </TextField>
-                        <TextField fx:id="txtUserName" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                        <TextField fx:id="txtUserName" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="2">
                            <GridPane.margin>
                               <Insets bottom="5.0" left="8.0" right="10.0" top="5.0" />
                            </GridPane.margin>
                         </TextField>
-                        <Label text="Descripción:" GridPane.rowIndex="1">
+                        <Label text="Descripción " GridPane.rowIndex="1">
                      <GridPane.margin>
                         <Insets left="10.0" />
                      </GridPane.margin></Label>
-                        <Label text="Usuario:" GridPane.rowIndex="2">
+                        <Label text="Usuario*" GridPane.rowIndex="2">
                      <GridPane.margin>
                         <Insets left="10.0" />
                      </GridPane.margin></Label>
-                        <Label text="Password:" GridPane.rowIndex="3">
+                        <Label text="Password*" GridPane.rowIndex="3">
                      <GridPane.margin>
                         <Insets left="10.0" />
                      </GridPane.margin></Label>
-                  <PasswordField fx:id="txtPassword" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                  <Button fx:id="btnReveal" alignment="CENTER" contentDisplay="CENTER" ellipsisString="" graphicTextGap="0.0" maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefWidth="30.0" textAlignment="CENTER" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
                      <GridPane.margin>
-                        <Insets bottom="5.0" left="8.0" right="10.0" top="5.0" />
+                        <Insets bottom="5.0" left="3.0" right="10.0" top="5.0" />
+                     </GridPane.margin>
+                  </Button>
+                  <TextField fx:id="txtPassword" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                     <GridPane.margin>
+                        <Insets bottom="5.0" left="8.0" top="5.0" />
+                     </GridPane.margin>
+                  </TextField>
+                  <PasswordField fx:id="pwdPassword" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                     <GridPane.margin>
+                        <Insets bottom="5.0" left="8.0" top="5.0" />
                      </GridPane.margin>
                   </PasswordField>
                      </children>
@@ -65,11 +77,12 @@
                   </GridPane>
                   <HBox alignment="CENTER_RIGHT" spacing="8.0">
                      <children>
-                        <Button fx:id="btnSave" mnemonicParsing="false" text="Grabar" />
-                        <Button fx:id="btnCancel" mnemonicParsing="false" text="Cancelar" />
+                  <Label maxWidth="1.7976931348623157E308" text="(*) Campos obligatorios" HBox.hgrow="ALWAYS" />
+                        <Button fx:id="btnSave" mnemonicParsing="false" text="Grabar" HBox.hgrow="NEVER" />
+                        <Button fx:id="btnCancel" mnemonicParsing="false" text="Cancelar" HBox.hgrow="NEVER" />
                      </children>
                <VBox.margin>
-                  <Insets right="10.0" />
+                  <Insets left="10.0" right="10.0" />
                </VBox.margin>
                   </HBox>
                </children>

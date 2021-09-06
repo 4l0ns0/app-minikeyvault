@@ -1,16 +1,17 @@
 package com.opencode.minikeyvault.view;
 
-import com.opencode.minikeyvault.utils.Constants;
+import com.opencode.minikeyvault.utils.ImageFactory;
+import com.opencode.minikeyvault.utils.ImageFactory.FontAwesome;
 import com.opencode.minikeyvault.viewmodel.UserKeyViewModel;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.beans.binding.Bindings;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
@@ -31,10 +32,13 @@ public class UserKeyInsUpdView implements Initializable {
     @FXML TextField txtApplication;
     @FXML TextField txtDescription;
     @FXML TextField txtUserName;
-    @FXML PasswordField txtPassword;
+    @FXML PasswordField pwdPassword;
+    @FXML TextField txtPassword;
 
+    @FXML Button btnReveal;
     @FXML Button btnSave;
     @FXML Button btnCancel;
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -42,20 +46,34 @@ public class UserKeyInsUpdView implements Initializable {
         txtApplication.textProperty().bindBidirectional(viewModel.applicationProperty());
         txtDescription.textProperty().bindBidirectional(viewModel.descriptionProperty());
         txtUserName.textProperty().bindBidirectional(viewModel.userNameProperty());
+        pwdPassword.textProperty().bindBidirectional(viewModel.passwordProperty());
+        pwdPassword.setVisible(true);
         txtPassword.textProperty().bindBidirectional(viewModel.passwordProperty());
+        txtPassword.setVisible(false);
 
-        ImageView imgOk = new ImageView(Constants.IMG_OK);
-        imgOk.setFitHeight(15);
-        imgOk.setPreserveRatio(true);
+        ImageFactory.setIcon(btnReveal, FontAwesome.FA_EYE, 12.0);
+        btnReveal.setOnAction(e -> {
+            txtPassword.setVisible(!txtPassword.isVisible());
+            pwdPassword.setVisible(!pwdPassword.isVisible());
+            
+            ImageFactory.setIcon(btnReveal, (pwdPassword.isVisible()
+                    ? FontAwesome.FA_EYE : FontAwesome.FA_EYE_SLASH), 12.0);
+        });
 
-        btnSave.setGraphic(imgOk);
+        ImageFactory.setIcon(btnSave, FontAwesome.FA_FLOPPY_O);
         btnSave.setOnAction(this::save);
+        btnSave.disableProperty().bind(
+                Bindings.createBooleanBinding(() -> txtApplication.getText().trim().isEmpty(),
+                        txtApplication.textProperty())
+                .or(Bindings.createBooleanBinding(() -> txtUserName.getText().trim().isEmpty(),
+                        txtUserName.textProperty()))
+                .or(Bindings.createBooleanBinding(() -> txtPassword.getText().trim().isEmpty(),
+                        txtPassword.textProperty()))
+                .or(Bindings.createBooleanBinding(() -> pwdPassword.getText().trim().isEmpty(),
+                        pwdPassword.textProperty()))
+        );
 
-        ImageView imgCancel = new ImageView(Constants.IMG_CANCEL);
-        imgCancel.setFitHeight(15);
-        imgCancel.setPreserveRatio(true);
-
-        btnCancel.setGraphic(imgCancel);
+        ImageFactory.setIcon(btnCancel, FontAwesome.FA_TIMES);
         btnCancel.setOnAction(this::close);
 
     }

@@ -14,13 +14,43 @@ import javafx.scene.image.Image;
  */
 public class ResourceManager {
 
-    private static final String DIR_IMAGES = "images";
-    private static final String DIR_FXMLVIEWS = "fxml/view";
+    private static final String DIR_FONTS = "fonts";
     private static final String DIR_FXMLDIALOGS = "fxml/dialog";
+    private static final String DIR_FXMLVIEWS = "fxml/view";
+    private static final String DIR_IMAGES = "images";
     private static final String DIR_SCRIPTS = "scripts";
 
     private ResourceManager() {
         throw new IllegalStateException(ResourceManager.class.getName());
+    }
+
+    /**
+     * Devuelve la referencia al archivo de fuente solicitada.
+     * 
+     * @param name nombre del archivo (Sin extensión).
+     * @return referencia al archivo.
+     */
+    public static URL getFont(String name) {
+        return getResource(DIR_FONTS, name);
+    }
+    
+    /**
+     * Devuelve la referencia al archivo (FXML) solicitado.
+     * 
+     * @param name nombre del archivo (Sin extensión).
+     * @return referencia al archivo.
+     */
+    public static URL getFxDialog(String name) {
+        return getResource(DIR_FXMLDIALOGS, name + ".fxml");
+    }
+
+    /**
+     * Devuelve la referencia al archivo (FXML) solicitado.
+     * @param name nombre del archivo (Sin extensión).
+     * @return referencia al archivo.
+     */
+    public static URL getFxView(String name) {
+        return getResource(DIR_FXMLVIEWS, name + ".fxml");
     }
 
     /**
@@ -40,25 +70,6 @@ public class ResourceManager {
         }
 
         return image;
-    }
-
-    /**
-     * Devuelve la referencia al archivo (FXML) solicitado.
-     * 
-     * @param name nombre del archivo (Sin extensión).
-     * @return referencia al archivo.
-     */
-    public static URL getFxDialog(String name) {
-        return getResource(DIR_FXMLDIALOGS, name + ".fxml");
-    }
-
-    /**
-     * Devuelve la referencia al archivo (FXML) solicitado.
-     * @param name nombre del archivo (Sin extensión).
-     * @return referencia al archivo.
-     */
-    public static URL getFxView(String name) {
-        return getResource(DIR_FXMLVIEWS, name + ".fxml");
     }
 
     /**
