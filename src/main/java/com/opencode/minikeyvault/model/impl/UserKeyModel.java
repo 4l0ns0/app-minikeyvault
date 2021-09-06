@@ -1,8 +1,8 @@
 package com.opencode.minikeyvault.model.impl;
 
-import com.opencode.minikeyvault.domain.UserKey;
 import com.opencode.minikeyvault.model.IUserKeyModel;
 import com.opencode.minikeyvault.model.db.Db;
+import com.opencode.minikeyvault.model.entity.UserKey;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -22,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class UserKeyModel implements IUserKeyModel {
 
-    private static final String COL_ID = "id";
+    private static final String COL_USERKEY_ID = "userkey_id";
     private static final String COL_APPLICATION = "application";
     private static final String COL_DESCRIPTION = "description";
     private static final String COL_USERNAME = "username";
@@ -37,7 +37,7 @@ public class UserKeyModel implements IUserKeyModel {
         List<UserKey> lst = new ArrayList<>();
 
         StringBuilder sql = new StringBuilder()
-            .append("select * from data ")
+            .append("select * from userkey ")
             .append((filter != null) ? "where application like ? " : "")
             .append("order by application");
 
@@ -54,7 +54,7 @@ public class UserKeyModel implements IUserKeyModel {
             rs = ps.executeQuery();
 
             while (rs.next()) {
-                lst.add(new UserKey(rs.getInt(COL_ID),
+                lst.add(new UserKey(rs.getInt(COL_USERKEY_ID),
                         rs.getString(COL_APPLICATION),
                         rs.getString(COL_DESCRIPTION),
                         rs.getString(COL_USERNAME),
@@ -71,7 +71,7 @@ public class UserKeyModel implements IUserKeyModel {
     }
 
     /**
-     * Devuelve el registro cuyo id se se indica como parametro.
+     * Devuelve el registro cuyo id se indica como parametro.
      */
     @Override
     public UserKey getOne(int userKeyId) {
@@ -82,13 +82,13 @@ public class UserKeyModel implements IUserKeyModel {
         ResultSet rs = null;
 
         try {
-            ps = Db.getStatement("select * from data where id = ? order by application");
+            ps = Db.getStatement("select * from userkey where userkey_id = ?");
             ps.setInt(1, userKeyId);
 
             rs = ps.executeQuery();
 
             while (rs.next()) {
-                userKey = new UserKey(rs.getInt(COL_ID), rs.getString(COL_APPLICATION), 
+                userKey = new UserKey(rs.getInt(COL_USERKEY_ID), rs.getString(COL_APPLICATION), 
                         rs.getString(COL_DESCRIPTION), rs.getString(COL_USERNAME), 
                         rs.getString(COL_PASSWORD));
             }
@@ -108,11 +108,12 @@ public class UserKeyModel implements IUserKeyModel {
     @Override
     public UserKey insert(UserKey userKey) {
 
-        PreparedStatement ps = null;
         int result = 0;
 
+        PreparedStatement ps = null;
+
         try {
-            ps = Db.getStatement("insert into data (application, description, "
+            ps = Db.getStatement("insert into userkey (application, description, "
                     + "username, password) values (?, ?, ?, ?)");
             ps.setString(1, userKey.getApplication());
             ps.setString(2, userKey.getDescription());
@@ -124,7 +125,7 @@ public class UserKeyModel implements IUserKeyModel {
             ResultSet keys = ps.getGeneratedKeys();
 
             if (keys.next() && result != 0) {
-                userKey.setId(keys.getInt(1));
+                userKey.setUserkeyId(keys.getInt(1));
             }
         } catch (SQLException e) {
             log.error("Ocurrieron errores al insertar el registro "
@@ -139,17 +140,18 @@ public class UserKeyModel implements IUserKeyModel {
     @Override
     public UserKey update(UserKey userKey) {
 
-        PreparedStatement ps = null;
         int result = 0;
 
+        PreparedStatement ps = null;
+
         try {
-            ps = Db.getStatement("update data set application = ?, description = ?, "
-                    + "username = ?, password = ? where id = ?");
+            ps = Db.getStatement("update userkey set application = ?, description = ?, "
+                    + "username = ?, password = ? where userkey_id = ?");
             ps.setString(1, userKey.getApplication());
             ps.setString(2, userKey.getDescription());
             ps.setString(3, userKey.getUserName());
             ps.setString(4, userKey.getPassword());
-            ps.setInt(5, userKey.getId());
+            ps.setInt(5, userKey.getUserkeyId());
 
             result = ps.executeUpdate();
         } catch (SQLException e) {
@@ -165,11 +167,12 @@ public class UserKeyModel implements IUserKeyModel {
     @Override
     public boolean delete(int userKeyId) {
 
-        PreparedStatement ps = null;
         int result = 0;
 
+        PreparedStatement ps = null;
+
         try {
-            ps = Db.getStatement("delete from data where id = ?");
+            ps = Db.getStatement("delete from userkey where userkey_id = ?");
             ps.setInt(1, userKeyId);
 
             result = ps.executeUpdate();

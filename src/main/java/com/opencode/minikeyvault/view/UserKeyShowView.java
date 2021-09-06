@@ -1,11 +1,11 @@
 package com.opencode.minikeyvault.view;
 
-import com.opencode.minikeyvault.domain.UserKey;
 import com.opencode.minikeyvault.utils.ImageFactory;
 import com.opencode.minikeyvault.utils.ImageFactory.FontAwesome;
 import com.opencode.minikeyvault.utils.ResourceManager;
 import com.opencode.minikeyvault.utils.Utils;
 import com.opencode.minikeyvault.view.commons.TableData;
+import com.opencode.minikeyvault.view.dto.KeyData;
 import com.opencode.minikeyvault.viewmodel.UserKeyViewModel;
 import com.opencode.minikeyvault.viewmodel.UserKeyViewModel.OperationType;
 import java.io.IOException;
@@ -188,15 +188,15 @@ public class UserKeyShowView implements Initializable {
      */
     public void showDialog(OperationType operationType) {
 
-        UserKey userKey = null;
+        KeyData keyData = null;
 
         if (operationType == OperationType.UPDATE
                 || operationType == OperationType.DELETE) {
-            userKey = tblData.getSelectionModel().getSelectedItem().getUserKey();
+            keyData = tblData.getSelectionModel().getSelectedItem().getKeyData();
         }
 
         btnFixit.setSelected(false);
-        viewModel.setOperationType(operationType, userKey);
+        viewModel.setOperationType(operationType, keyData);
 
         if (operationType == OperationType.INSERT 
                 || operationType == OperationType.UPDATE) {
@@ -223,7 +223,7 @@ public class UserKeyShowView implements Initializable {
             alert.setTitle("Eliminar Registro");
             alert.setHeaderText(null);
             alert.setContentText("Está seguro que desea eliminar el registro '" 
-                    + userKey.getApplication() + "'?");
+                    + keyData.getApplication() + "'?");
 
             Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
             stage.getIcons().add(ImageFactory.IMG_APP_ICON);

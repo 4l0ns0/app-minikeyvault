@@ -1,8 +1,8 @@
 package com.opencode.minikeyvault.view.commons;
 
-import com.opencode.minikeyvault.domain.UserKey;
 import com.opencode.minikeyvault.utils.ImageFactory;
 import com.opencode.minikeyvault.utils.ImageFactory.FontAwesome;
+import com.opencode.minikeyvault.view.dto.KeyData;
 import java.util.Objects;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -26,28 +26,28 @@ import lombok.Getter;
 @Getter
 public class TableData {
 
-    private UserKey userKey;
+    private KeyData keyData;
 
-    private int id;
+    private int keyId;
     private String application;
     private String description;
     private StackPane userName;
     private StackPane password;
-    
+
     /**
      * Constructor de la clase.
      * 
-     * @param userKey instancia del UserKey.
+     * @param keyData instancia del KeyData.
      */
-    public TableData(UserKey userKey) {
-        
-        this.userKey = userKey;
+    public TableData(KeyData keyData) {
 
-        this.id = userKey.getId();
-        this.application = userKey.getApplication();
-        this.description = userKey.getDescription();
-        this.userName = getDataPaneInstance(userKey.getUserName());
-        this.password = getDataPaneInstance(userKey.getPassword());
+        this.keyData = keyData;
+
+        this.keyId = keyData.getKeyId();
+        this.application = keyData.getApplication();
+        this.description = keyData.getDescription();
+        this.userName = getDataPaneInstance(keyData.getUserName());
+        this.password = getDataPaneInstance(keyData.getPassword());
 
     }
 
@@ -98,7 +98,7 @@ public class TableData {
 
         TableData other = (TableData) obj;
 
-        return id == other.id
+        return keyId == other.keyId
                 && Objects.equals(application, other.application)
                 && Objects.equals(description, other.description)
                 && Objects.equals(((PasswordField) userName.getChildren().get(0)).getText(), 
@@ -109,7 +109,7 @@ public class TableData {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, application, description, 
+        return Objects.hash(keyId, application, description, 
                 ((PasswordField) userName.getChildren().get(0)).getText(),
                 ((PasswordField) password.getChildren().get(0)).getText());
     }

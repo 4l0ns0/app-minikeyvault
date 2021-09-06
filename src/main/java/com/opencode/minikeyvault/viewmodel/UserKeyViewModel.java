@@ -1,9 +1,9 @@
 package com.opencode.minikeyvault.viewmodel;
 
-import com.opencode.minikeyvault.domain.UserKey;
 import com.opencode.minikeyvault.model.IUserKeyModel;
 import com.opencode.minikeyvault.model.impl.UserKeyModel;
 import com.opencode.minikeyvault.view.commons.TableData;
+import com.opencode.minikeyvault.view.dto.KeyData;
 import com.opencode.minikeyvault.viewmodel.converter.UserKeyConverter;
 import java.util.stream.Collectors;
 import javafx.animation.PauseTransition;
@@ -48,7 +48,7 @@ public class UserKeyViewModel {
 
     private ObservableList<TableData> observableList = FXCollections.observableArrayList();
 
-    private IntegerProperty id = new SimpleIntegerProperty(0);
+    private IntegerProperty keyId = new SimpleIntegerProperty(0);
     private StringProperty application = new SimpleStringProperty("");
     private StringProperty description = new SimpleStringProperty("");
     private StringProperty userName = new SimpleStringProperty("");
@@ -89,7 +89,7 @@ public class UserKeyViewModel {
 
         observableList.setAll(userKeyModel
               .getAll(filter).stream()
-              .map(TableData::new)
+              .map(e -> new TableData(UserKeyConverter.convert(e)))
               .collect(Collectors.toList()));
 
     }
@@ -99,19 +99,20 @@ public class UserKeyViewModel {
      * 
      * @param operationType tipo de operacion (OperationType.INSERT, 
      *     OperationType.UPDATE, OperationType.DELETE)
-     * @param userKey instancia del UserKey en caso el tipo de operación se OperationType.UPDATE 
+     * @param keyData instancia del KeyData en caso el tipo de operación se OperationType.UPDATE 
      *     o OperationType.DELETE. Null en caso la operación sea OperationType.INSERT.
      */
-    public void setOperationType(OperationType operationType, UserKey userKey) {
+    public void setOperationType(OperationType operationType, KeyData keyData) {
 
         this.operationType = operationType;
 
-        if (operationType != OperationType.INSERT && userKey != null) {
-            this.id.set(userKey.getId());
-            this.application.set(userKey.getApplication());
-            this.description.set(userKey.getDescription());
-            this.userName.set(userKey.getUserName());
-            this.password.set(userKey.getPassword());
+        if ((operationType == OperationType.UPDATE || operationType == OperationType.DELETE) 
+                && keyData != null) {
+            this.keyId.set(keyData.getKeyId());
+            this.application.set(keyData.getApplication());
+            this.description.set(keyData.getDescription());
+            this.userName.set(keyData.getUserName());
+            this.password.set(keyData.getPassword());
         }
 
     }
@@ -153,7 +154,7 @@ public class UserKeyViewModel {
 
         String message = "Ocurrió un error. Revise el log para ver el detalle.";
 
-        if (userKeyModel.delete(UserKeyConverter.convert(this).getId())) {
+        if (userKeyModel.delete(UserKeyConverter.convert(this).getUserkeyId())) {
             message = "El registro se eliminó correctamente";
         }
 
@@ -162,6 +163,12 @@ public class UserKeyViewModel {
 
     }
 
+    /**
+     * Metodo que define el mensaje del resultado de la operación y luego del 
+     * intervalo de tiempo establecido lo desaparece.
+     * 
+     * @param message mensaje a mostrar.
+     */
     private void setUserMessage(String message) {
 
         userMessage.set(message);
@@ -177,7 +184,7 @@ public class UserKeyViewModel {
      */
     public void clean() {
 
-        id.set(0);
+        keyId.set(0);
         application.set("");
         description.set("");
         userName.set("");
@@ -204,7 +211,7 @@ public class UserKeyViewModel {
     }
 
     public IntegerProperty idProperty() {
-        return id;
+        return keyId;
     }
 
     public StringProperty applicationProperty() {
