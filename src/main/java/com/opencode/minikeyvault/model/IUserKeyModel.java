@@ -13,7 +13,7 @@ import java.util.List;
  */
 public interface IUserKeyModel {
 
-    List<UserKey> getAll();
+    List<UserKey> getAll(String filter);
 
     UserKey getOne(int userKeyId);
 

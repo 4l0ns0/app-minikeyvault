@@ -6,17 +6,16 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import lombok.extern.slf4j.Slf4j;
+import org.h2.jdbcx.JdbcConnectionPool;
 import org.h2.tools.RunScript;
 
 /**
  * class: Db. <br/>
- * 
  * @author Henry Navarro <br/>
  *         <br/>
  *         <u>Cambios</u>:<br/>
@@ -28,6 +27,8 @@ import org.h2.tools.RunScript;
 @Slf4j
 public class Db {
 
+    private static JdbcConnectionPool cp;
+
     private static final String DRIVER_NAME = "jdbc:h2";
     private static final String BD_NAME = "keystore";
     private static final String BD_FILENAME = "keystore.mv.db";
@@ -37,7 +38,8 @@ public class Db {
     }
 
     /**
-     * Metodo que devuelve una nueva instancia de conexión a la base de datos.
+     * Metodo que instancia el pool de conexiones y devuelve una intancia de conexion a 
+     * la base de datos.
      * 
      * @param onlyIfExist Si es true, únicamente se conectará a la bd si esta existe y 
      *     devolvera una excepción en caso esto no se cumpla. Caso contrario, si es 
@@ -45,10 +47,15 @@ public class Db {
      * @return instancia de conexión.
      * @throws SQLException excepción en caso ocurriera un error de conexión.
      */
-    private static Connection getNewInstance(boolean onlyIfExist) throws SQLException {
-        return DriverManager.getConnection(
-                DRIVER_NAME + ":./" + BD_NAME + ";IFEXISTS=" + (onlyIfExist ? "TRUE" : "FALSE"), 
-                "kstoreUser", "s3cr3t-P@ss#K3yv4ult"); // TODO manejar desde el properties
+    private static Connection getConnectionFromPool(boolean onlyIfExist) throws SQLException {
+
+        if (cp == null) {
+            cp = JdbcConnectionPool.create(DRIVER_NAME + ":./" + BD_NAME + ";IFEXISTS=" 
+                    + (onlyIfExist ? "TRUE" : "FALSE") + ";IGNORECASE=TRUE", 
+                    "kstoreUser", "s3cr3t-P@ss#K3yv4ult");
+        }
+
+        return cp.getConnection();
     }
     
     /**
@@ -68,7 +75,7 @@ public class Db {
 
             try (InputStreamReader reader = new InputStreamReader(ResourceManager
                     .getScriptFile("bd-init.sql"), StandardCharsets.UTF_8)) {
-                cn = getNewInstance(false);
+                cn = getConnectionFromPool(false);
                 RunScript.execute(cn, reader);
             } catch (SQLException | IOException e) {
                 log.error("Error al iniciar la bd: {}", e.getMessage());
@@ -87,7 +94,7 @@ public class Db {
     public static Connection getConnection() {
 
         try {
-            return getNewInstance(true);
+            return getConnectionFromPool(true);
         } catch (SQLException e) {
             log.error("Error al generar el connection: {}", e.getMessage());
         }

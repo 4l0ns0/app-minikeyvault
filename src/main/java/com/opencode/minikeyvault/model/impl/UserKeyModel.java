@@ -10,7 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 
-/** class: UserKeyModel. <br/>
+/** 
+ * class: UserKeyModel. <br/>
  * @author Henry Navarro <br/><br/>
  *          <u>Cambios</u>:<br/>
  *          <ul>
@@ -31,15 +32,26 @@ public class UserKeyModel implements IUserKeyModel {
      * Devuelve todos los registros de la tabla desde la base de datos.
      */
     @Override
-    public List<UserKey> getAll() {
+    public List<UserKey> getAll(String filter) {
 
         List<UserKey> lst = new ArrayList<>();
 
+        StringBuilder sql = new StringBuilder()
+            .append("select * from data ")
+            .append((filter != null) ? "where application like ? " : "")
+            .append("order by application");
+
+        PreparedStatement ps = null;
         ResultSet rs = null;
 
         try {
-            rs = Db.getStatement("select * from data order by application")
-                    .executeQuery();
+            ps = Db.getStatement(sql.toString());
+
+            if (filter != null) {
+                ps.setString(1, "%" + filter + "%");
+            }
+
+            rs = ps.executeQuery();
 
             while (rs.next()) {
                 lst.add(new UserKey(rs.getInt(COL_ID),
