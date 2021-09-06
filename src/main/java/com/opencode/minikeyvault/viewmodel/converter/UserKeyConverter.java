@@ -1,6 +1,7 @@
 package com.opencode.minikeyvault.viewmodel.converter;
 
-import com.opencode.minikeyvault.domain.UserKey;
+import com.opencode.minikeyvault.model.entity.UserKey;
+import com.opencode.minikeyvault.view.dto.KeyData;
 import com.opencode.minikeyvault.viewmodel.UserKeyViewModel;
 
 /** class: UserKeyConverter. <br/>
@@ -30,6 +31,17 @@ public class UserKeyConverter {
                 viewModel.descriptionProperty().get(), 
                 viewModel.userNameProperty().get(),
                 viewModel.passwordProperty().get());
+    }
+    
+    /**
+     * Metodo para mapear los atributos de la entidad UserKey al DTO KeyData.
+     * 
+     * @param userKey instancia del objeto.
+     * @return instancia de KeyData.
+     */
+    public static KeyData convert(UserKey userKey) {
+        return new KeyData(userKey.getUserkeyId(), userKey.getApplication(), 
+                userKey.getDescription(), userKey.getUserName(), userKey.getPassword());
     }
 
 }

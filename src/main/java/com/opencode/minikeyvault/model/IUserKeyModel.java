@@ -1,6 +1,6 @@
 package com.opencode.minikeyvault.model;
 
-import com.opencode.minikeyvault.domain.UserKey;
+import com.opencode.minikeyvault.model.entity.UserKey;
 import java.util.List;
 
 /** interface: IUserKeyModel. <br/>
