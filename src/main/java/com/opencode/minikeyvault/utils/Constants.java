@@ -16,7 +16,6 @@ public class Constants {
     }
 
     public static final String APP_NAME = "Mini Keyvault";
-    public static final String CONFIGURATION_FILENAME = "application.properties";
-    public static final String KEYSTORE_FILENAME = "keystore.json";
+    public static final String CONFIGURATION_FILENAME = "mkv.properties";
 
 }

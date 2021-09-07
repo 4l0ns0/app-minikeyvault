@@ -1,7 +1,7 @@
 package com.opencode.minikeyvault.model.dao.impl;
 
 import com.opencode.minikeyvault.model.dao.UserKeyModel;
-import com.opencode.minikeyvault.model.db.Db;
+import com.opencode.minikeyvault.model.db.Datasource;
 import com.opencode.minikeyvault.model.entity.UserKey;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -45,7 +45,7 @@ public class UserKeyModelImpl implements UserKeyModel {
         ResultSet rs = null;
 
         try {
-            ps = Db.getStatement(sql.toString());
+            ps = Datasource.getStatement(sql.toString());
 
             if (filter != null) {
                 ps.setString(1, "%" + filter + "%");
@@ -64,7 +64,7 @@ public class UserKeyModelImpl implements UserKeyModel {
             log.error("Ocurrieron errores al recuperar los registros "
                     + "desde la BD: {}" + e.getMessage());
         } finally {
-            Db.close(rs, true);
+            Datasource.close(rs, true);
         }
 
         return lst;
@@ -82,7 +82,7 @@ public class UserKeyModelImpl implements UserKeyModel {
         ResultSet rs = null;
 
         try {
-            ps = Db.getStatement("select * from userkey where userkey_id = ?");
+            ps = Datasource.getStatement("select * from userkey where userkey_id = ?");
             ps.setInt(1, userKeyId);
 
             rs = ps.executeQuery();
@@ -96,7 +96,7 @@ public class UserKeyModelImpl implements UserKeyModel {
             log.error("Ocurrieron errores al recuperar el registro "
                     + "desde la BD: {}", e.getMessage());
         } finally {
-            Db.close(rs, true);
+            Datasource.close(rs, true);
         }
 
         return userKey;
@@ -113,7 +113,7 @@ public class UserKeyModelImpl implements UserKeyModel {
         PreparedStatement ps = null;
 
         try {
-            ps = Db.getStatement("insert into userkey (application, description, "
+            ps = Datasource.getStatement("insert into userkey (application, description, "
                     + "username, password) values (?, ?, ?, ?)");
             ps.setString(1, userKey.getApplication());
             ps.setString(2, userKey.getDescription());
@@ -131,7 +131,7 @@ public class UserKeyModelImpl implements UserKeyModel {
             log.error("Ocurrieron errores al insertar el registro "
                     + "en la BD: {}", e.getMessage());
         } finally {
-            Db.close(ps, true);
+            Datasource.close(ps, true);
         }
 
         return result == 1 ? userKey : null;
@@ -145,7 +145,7 @@ public class UserKeyModelImpl implements UserKeyModel {
         PreparedStatement ps = null;
 
         try {
-            ps = Db.getStatement("update userkey set application = ?, description = ?, "
+            ps = Datasource.getStatement("update userkey set application = ?, description = ?, "
                     + "username = ?, password = ? where userkey_id = ?");
             ps.setString(1, userKey.getApplication());
             ps.setString(2, userKey.getDescription());
@@ -158,7 +158,7 @@ public class UserKeyModelImpl implements UserKeyModel {
             log.error("Ocurrieron errores al actualizar el registro "
                     + "en la BD: {}", e.getMessage());
         } finally {
-            Db.close(ps, true);
+            Datasource.close(ps, true);
         }
 
         return result == 1 ? userKey : null;
@@ -172,7 +172,7 @@ public class UserKeyModelImpl implements UserKeyModel {
         PreparedStatement ps = null;
 
         try {
-            ps = Db.getStatement("delete from userkey where userkey_id = ?");
+            ps = Datasource.getStatement("delete from userkey where userkey_id = ?");
             ps.setInt(1, userKeyId);
 
             result = ps.executeUpdate();
@@ -180,7 +180,7 @@ public class UserKeyModelImpl implements UserKeyModel {
             log.error("Ocurrieron errores al actualizar el registro "
                     + "en la BD: {}", e.getMessage());
         } finally {
-            Db.close(ps, true);
+            Datasource.close(ps, true);
         }
 
         return result == 1;

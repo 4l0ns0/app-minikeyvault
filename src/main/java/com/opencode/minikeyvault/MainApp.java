@@ -1,6 +1,7 @@
 package com.opencode.minikeyvault;
 
-import com.opencode.minikeyvault.model.db.Db;
+import com.opencode.minikeyvault.model.db.Datasource;
+import com.opencode.minikeyvault.utils.ConfigFile;
 import com.opencode.minikeyvault.utils.Constants;
 import com.opencode.minikeyvault.utils.ImageFactory;
 import com.opencode.minikeyvault.utils.ResourceManager;
@@ -22,8 +23,14 @@ import javafx.stage.Stage;
  */
 public class MainApp extends Application {
 
+    /**
+     * Constructor.
+     */
     public MainApp() {
-        Db.init();
+
+        ConfigFile.init();
+        Datasource.init();
+
     }
 
     @Override
@@ -41,11 +48,7 @@ public class MainApp extends Application {
         stage.setTitle(Constants.APP_NAME);
         stage.getIcons().add(ImageFactory.IMG_APP_ICON);
         stage.setScene(scene);
-//        stage.setResizable(false);
         stage.show();
-//        stage.centerOnScreen();
-//        stage.setX(scene.getWidth() - (scene.getWidth() / 2));
-//        stage.setY(scene.getHeight() - (scene.getHeight() / 2));
 
     }
 

@@ -1,5 +1,6 @@
 package com.opencode.minikeyvault.model.db;
 
+import com.opencode.minikeyvault.utils.ConfigFile;
 import com.opencode.minikeyvault.utils.ResourceManager;
 import java.io.File;
 import java.io.IOException;
@@ -25,16 +26,16 @@ import org.h2.tools.RunScript;
  * @version 1.0
  */
 @Slf4j
-public class Db {
+public class Datasource {
 
     private static JdbcConnectionPool cp;
 
     private static final String DRIVER_NAME = "jdbc:h2";
-    private static final String BD_NAME = "keystore";
-    private static final String BD_FILENAME = "keystore.mv.db";
+    private static final String DB_NAME = "keystore";
+    private static final String DB_FILENAME = DB_NAME + ".mv.db";
 
-    private Db() {
-        throw new IllegalStateException(Db.class.getName());
+    private Datasource() {
+        throw new IllegalStateException(Datasource.class.getName());
     }
 
     /**
@@ -50,14 +51,15 @@ public class Db {
     private static Connection getConnectionFromPool(boolean onlyIfExist) throws SQLException {
 
         if (cp == null) {
-            cp = JdbcConnectionPool.create(DRIVER_NAME + ":./" + BD_NAME + ";IFEXISTS=" 
+            cp = JdbcConnectionPool.create(DRIVER_NAME + ":./" + DB_NAME + ";IFEXISTS=" 
                     + (onlyIfExist ? "TRUE" : "FALSE") + ";IGNORECASE=TRUE", 
-                    "kstoreUser", "s3cr3t-P@ss#K3yv4ult");
+                    ConfigFile.getProperties().getProperty(ConfigFile.AUTH_DB_USERNAME), 
+                    ConfigFile.getProperties().getProperty(ConfigFile.AUTH_DB_PASSWORD));
         }
 
         return cp.getConnection();
     }
-    
+
     /**
      * Metodo para inicializar la base de datos.
      * 
@@ -68,7 +70,7 @@ public class Db {
      */
     public static void init() {
 
-        if (new File(BD_FILENAME).exists()) {
+        if (new File(DB_FILENAME).exists()) {
             log.debug("La base de datos ya existe, no es necesario inicializarla.");
         } else {
             Connection cn = null;
@@ -80,7 +82,7 @@ public class Db {
             } catch (SQLException | IOException e) {
                 log.error("Error al iniciar la bd: {}", e.getMessage());
             } finally {
-                Db.close(cn);
+                Datasource.close(cn);
             }
         }
 
@@ -110,7 +112,7 @@ public class Db {
      */
     public static PreparedStatement getStatement(String sql) {
 
-        Connection cn = Db.getConnection();
+        Connection cn = Datasource.getConnection();
 
         if (cn != null) {
             try {
