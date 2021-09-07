@@ -2,9 +2,9 @@ package com.opencode.minikeyvault.viewmodel.converter;
 
 import com.opencode.minikeyvault.model.entity.UserKey;
 import com.opencode.minikeyvault.view.dto.KeyData;
-import com.opencode.minikeyvault.viewmodel.UserKeyViewModel;
+import com.opencode.minikeyvault.viewmodel.KeyDataViewModel;
 
-/** class: UserKeyConverter. <br/>
+/** class: KeyDataConverter. <br/>
  * @author Henry Navarro <br/><br/>
  *          <u>Cambios</u>:<br/>
  *          <ul>
@@ -12,10 +12,10 @@ import com.opencode.minikeyvault.viewmodel.UserKeyViewModel;
  *          </ul>
  * @version 1.0
  */
-public class UserKeyConverter {
+public class KeyDataConverter {
 
-    private UserKeyConverter() {
-        throw new IllegalStateException(UserKeyConverter.class.getName());
+    private KeyDataConverter() {
+        throw new IllegalStateException(KeyDataConverter.class.getName());
     }
 
     /**
@@ -25,7 +25,7 @@ public class UserKeyConverter {
      * @param viewModel instancia del viewModel.
      * @return instancia del objeto
      */
-    public static UserKey convert(UserKeyViewModel viewModel) {
+    public static UserKey convert(KeyDataViewModel viewModel) {
         return new UserKey(viewModel.idProperty().get(), 
                 viewModel.applicationProperty().get(), 
                 viewModel.descriptionProperty().get(), 

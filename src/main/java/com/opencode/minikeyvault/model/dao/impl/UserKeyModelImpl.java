@@ -1,6 +1,6 @@
-package com.opencode.minikeyvault.model.impl;
+package com.opencode.minikeyvault.model.dao.impl;
 
-import com.opencode.minikeyvault.model.IUserKeyModel;
+import com.opencode.minikeyvault.model.dao.UserKeyModel;
 import com.opencode.minikeyvault.model.db.Db;
 import com.opencode.minikeyvault.model.entity.UserKey;
 import java.sql.PreparedStatement;
@@ -11,7 +11,7 @@ import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 
 /** 
- * class: UserKeyModel. <br/>
+ * class: UserKeyModelImpl. <br/>
  * @author Henry Navarro <br/><br/>
  *          <u>Cambios</u>:<br/>
  *          <ul>
@@ -20,7 +20,7 @@ import lombok.extern.slf4j.Slf4j;
  * @version 1.0
  */
 @Slf4j
-public class UserKeyModel implements IUserKeyModel {
+public class UserKeyModelImpl implements UserKeyModel {
 
     private static final String COL_USERKEY_ID = "userkey_id";
     private static final String COL_APPLICATION = "application";

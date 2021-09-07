@@ -4,10 +4,10 @@ import com.opencode.minikeyvault.utils.ImageFactory;
 import com.opencode.minikeyvault.utils.ImageFactory.FontAwesome;
 import com.opencode.minikeyvault.utils.ResourceManager;
 import com.opencode.minikeyvault.utils.Utils;
-import com.opencode.minikeyvault.view.commons.TableData;
+import com.opencode.minikeyvault.view.commons.KeyDataRow;
 import com.opencode.minikeyvault.view.dto.KeyData;
-import com.opencode.minikeyvault.viewmodel.UserKeyViewModel;
-import com.opencode.minikeyvault.viewmodel.UserKeyViewModel.OperationType;
+import com.opencode.minikeyvault.viewmodel.KeyDataViewModel;
+import com.opencode.minikeyvault.viewmodel.KeyDataViewModel.OperationType;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Optional;
@@ -39,7 +39,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 /**
- * class: UserKeyShowView. <br/>
+ * class: KeyDataMenuView. <br/>
  * @author Henry Navarro <br/><br/>
  *          <u>Cambios</u>:<br/>
  *          <ul>
@@ -47,9 +47,9 @@ import javafx.stage.Stage;
  *          </ul>
  * @version 1.0
  */
-public class UserKeyShowView implements Initializable {
+public class KeyDataMenuView implements Initializable {
 
-    private final UserKeyViewModel viewModel = UserKeyViewModel.getInstance();
+    private final KeyDataViewModel viewModel = KeyDataViewModel.getInstance();
 
     private Stage parentStage;
 
@@ -69,10 +69,10 @@ public class UserKeyShowView implements Initializable {
     @FXML Label lblTotalRecords;
     @FXML Label lblMessage;
 
-    @FXML TableView<TableData> tblData;
-    @FXML TableColumn<TableData, ?> tblColApplication;
-    @FXML TableColumn<TableData, ?> tblColUserName;
-    @FXML TableColumn<TableData, ?> tblColPassword;
+    @FXML TableView<KeyDataRow> tblData;
+    @FXML TableColumn<KeyDataRow, ?> tblColApplication;
+    @FXML TableColumn<KeyDataRow, ?> tblColUserName;
+    @FXML TableColumn<KeyDataRow, ?> tblColPassword;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -129,24 +129,24 @@ public class UserKeyShowView implements Initializable {
         tblData.setItems(viewModel.getObservableList());
         tblData.setRowFactory(tableView -> {
 
-            final TableRow<TableData> tableRow = new TableRow<>();
+            final TableRow<KeyDataRow> tableRow = new TableRow<>();
 
             tableRow.hoverProperty().addListener(listener -> {
-                
-                final TableData tableData = tableRow.getItem();
 
-                if (tableRow.isHover() && tableData != null) {
+                final KeyDataRow keyDataRow = tableRow.getItem();
+
+                if (tableRow.isHover() && keyDataRow != null) {
                     setCellBehavior(
-                            (PasswordField) tableData.getUserName()
+                            (PasswordField) keyDataRow.getUserName()
                                 .getChildren().get(0),
-                            (Label) tableData.getUserName()
+                            (Label) keyDataRow.getUserName()
                                 .getChildren().get(1),
                             tableRow.getIndex());
 
                     setCellBehavior(
-                            (PasswordField) tableData.getPassword()
+                            (PasswordField) keyDataRow.getPassword()
                                 .getChildren().get(0),
-                            (Label) tableData.getPassword()
+                            (Label) keyDataRow.getPassword()
                                 .getChildren().get(1),
                             tableRow.getIndex());
 
@@ -160,6 +160,14 @@ public class UserKeyShowView implements Initializable {
 
     }
 
+    /**
+     * Metodo que define el comportamiento de los botones alojados en las celdas de 
+     * las columnas usuario y password.
+     * 
+     * @param passwordField objeto que contiene la información de la celda. 
+     * @param image imagen que muestra el icono de copiar.
+     * @param rowIndex fila a la que corresponden los valores.
+     */
     private void setCellBehavior(PasswordField passwordField, Label image, int rowIndex) {
 
         passwordField.setOnMouseEntered(e -> image.setVisible(true));
@@ -202,7 +210,7 @@ public class UserKeyShowView implements Initializable {
                 || operationType == OperationType.UPDATE) {
             try {
                 FXMLLoader loader = new FXMLLoader(ResourceManager
-                        .getFxDialog("UserKeyInsUpdView"));
+                        .getFxDialog("KeyDataInsUpdView"));
 
                 Scene scene = new Scene(loader.load());
                 scene.getStylesheets().add("/styles/styles.css");
