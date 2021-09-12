@@ -4,14 +4,15 @@ import com.opencode.minikeyvault.utils.ImageFactory;
 import com.opencode.minikeyvault.utils.ImageFactory.FontAwesome;
 import com.opencode.minikeyvault.utils.ResourceManager;
 import com.opencode.minikeyvault.utils.Utils;
-import com.opencode.minikeyvault.view.commons.TableData;
+import com.opencode.minikeyvault.view.commons.KeyDataRow;
 import com.opencode.minikeyvault.view.dto.KeyData;
-import com.opencode.minikeyvault.viewmodel.UserKeyViewModel;
-import com.opencode.minikeyvault.viewmodel.UserKeyViewModel.OperationType;
+import com.opencode.minikeyvault.viewmodel.KeyDataViewModel;
+import com.opencode.minikeyvault.viewmodel.KeyDataViewModel.OperationType;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
@@ -37,9 +38,10 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 /**
- * class: UserKeyShowView. <br/>
+ * class: KeyDataMenuView. <br/>
  * @author Henry Navarro <br/><br/>
  *          <u>Cambios</u>:<br/>
  *          <ul>
@@ -47,18 +49,24 @@ import javafx.stage.Stage;
  *          </ul>
  * @version 1.0
  */
-public class UserKeyShowView implements Initializable {
+public class KeyDataMenuView implements Initializable {
 
-    private final UserKeyViewModel viewModel = UserKeyViewModel.getInstance();
+    private final KeyDataViewModel viewModel = KeyDataViewModel.getInstance();
 
     private Stage parentStage;
+    private Tooltip tooltip;
+    private PauseTransition tooltipTransition;
 
     @FXML BorderPane bpnPrincipal;
 
     @FXML CheckMenuItem chkAlwaysOnTop;
     @FXML CheckMenuItem chkFixItWhenCopyUser;
     @FXML CheckMenuItem chkFixItWhenCopyPassword;
+
     @FXML MenuItem mnuClose;
+    @FXML MenuItem mnuBackup;
+    @FXML MenuItem mnuHelp;
+    @FXML MenuItem mnuAbout;
 
     @FXML TextField txtFilter;
 
@@ -69,32 +77,39 @@ public class UserKeyShowView implements Initializable {
     @FXML Label lblTotalRecords;
     @FXML Label lblMessage;
 
-    @FXML TableView<TableData> tblData;
-    @FXML TableColumn<TableData, ?> tblColApplication;
-    @FXML TableColumn<TableData, ?> tblColUserName;
-    @FXML TableColumn<TableData, ?> tblColPassword;
+    @FXML TableView<KeyDataRow> tblData;
+    @FXML TableColumn<KeyDataRow, ?> tblColApplication;
+    @FXML TableColumn<KeyDataRow, ?> tblColUserName;
+    @FXML TableColumn<KeyDataRow, ?> tblColPassword;
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        ImageFactory.setIcon(mnuClose, FontAwesome.FA_FILE_O, 12.0);
-        mnuClose.setOnAction(e -> showDialog(OperationType.INSERT));
+        tooltip = new Tooltip("Texto copiado");
+
+        tooltipTransition = new PauseTransition(Duration.seconds(3));
+        tooltipTransition.setOnFinished(event -> tooltip.hide());
+
+        mnuClose.setOnAction(e -> parentStage.close());
+        mnuBackup.setOnAction(e -> showDlgBackup());
+        mnuAbout.setOnAction(e -> showDlgAbout());
 
         txtFilter.textProperty().bindBidirectional(viewModel.filterProperty());
         txtFilter.textProperty().addListener(
                 (observable, oldValue, newValue) -> viewModel.fillObservableList(newValue));
 
         ImageFactory.setIcon(btnInsert, FontAwesome.FA_FILE_O);
-        btnInsert.setOnAction(e -> showDialog(OperationType.INSERT));
+        btnInsert.setOnAction(e -> showIupDialog(OperationType.INSERT));
 
         ImageFactory.setIcon(btnUpdate, FontAwesome.FA_PENSIL);
-        btnUpdate.setOnAction(e -> showDialog(OperationType.UPDATE));
+        btnUpdate.setOnAction(e -> showIupDialog(OperationType.UPDATE));
         btnUpdate.disableProperty().bind(Bindings.createBooleanBinding(
                 () -> tblData.getSelectionModel().getSelectedItem() == null, 
                 tblData.getSelectionModel().selectedItemProperty()));
 
         ImageFactory.setIcon(btnDelete, FontAwesome.FA_TRASH_O);
-        btnDelete.setOnAction(e -> showDialog(OperationType.DELETE));
+        btnDelete.setOnAction(e -> showIupDialog(OperationType.DELETE));
         btnDelete.disableProperty().bind(Bindings.createBooleanBinding(
                 () -> tblData.getSelectionModel().getSelectedItem() == null, 
                 tblData.getSelectionModel().selectedItemProperty()));
@@ -107,10 +122,10 @@ public class UserKeyShowView implements Initializable {
                     parentStage.setAlwaysOnTop(newValue);
                     
                     if (newValue.booleanValue()) {
-                        btnFixit.setText("Fijado: Si");
+                        btnFixit.setText("Bloquear");
                         ImageFactory.setIcon(btnFixit, FontAwesome.FA_TOGGLE_ON);
                     } else {
-                        btnFixit.setText("Fijado: No");
+                        btnFixit.setText("Bloquear");
                         ImageFactory.setIcon(btnFixit, FontAwesome.FA_TOGGLE_OFF);
                     }
                 });
@@ -129,24 +144,24 @@ public class UserKeyShowView implements Initializable {
         tblData.setItems(viewModel.getObservableList());
         tblData.setRowFactory(tableView -> {
 
-            final TableRow<TableData> tableRow = new TableRow<>();
+            final TableRow<KeyDataRow> tableRow = new TableRow<>();
 
             tableRow.hoverProperty().addListener(listener -> {
-                
-                final TableData tableData = tableRow.getItem();
 
-                if (tableRow.isHover() && tableData != null) {
+                final KeyDataRow keyDataRow = tableRow.getItem();
+
+                if (tableRow.isHover() && keyDataRow != null) {
                     setCellBehavior(
-                            (PasswordField) tableData.getUserName()
+                            (PasswordField) keyDataRow.getUserName()
                                 .getChildren().get(0),
-                            (Label) tableData.getUserName()
+                            (Label) keyDataRow.getUserName()
                                 .getChildren().get(1),
                             tableRow.getIndex());
 
                     setCellBehavior(
-                            (PasswordField) tableData.getPassword()
+                            (PasswordField) keyDataRow.getPassword()
                                 .getChildren().get(0),
-                            (Label) tableData.getPassword()
+                            (Label) keyDataRow.getPassword()
                                 .getChildren().get(1),
                             tableRow.getIndex());
 
@@ -160,6 +175,14 @@ public class UserKeyShowView implements Initializable {
 
     }
 
+    /**
+     * Metodo que define el comportamiento de los botones alojados en las celdas de 
+     * las columnas usuario y password.
+     * 
+     * @param passwordField objeto que contiene la información de la celda. 
+     * @param image imagen que muestra el icono de copiar.
+     * @param rowIndex fila a la que corresponden los valores.
+     */
     private void setCellBehavior(PasswordField passwordField, Label image, int rowIndex) {
 
         passwordField.setOnMouseEntered(e -> image.setVisible(true));
@@ -171,22 +194,24 @@ public class UserKeyShowView implements Initializable {
         passwordField.setOnMouseClicked(e -> {
             if (e.getButton().equals(MouseButton.PRIMARY) 
                     && e.getClickCount() == 2) {
-                Utils.copyToClipboard(passwordField.getText());
-
                 if (e.isControlDown()) {
                     btnFixit.setSelected(true);
                 }
+
+                Utils.copyToClipboard(passwordField.getText());
+                showTooltipMessage(e.getScreenX(), e.getScreenY());
             }
         });
 
     }
-    
+
     /**
-     * Muestra el dialogo respectivo según el tipo de operación indicada.
+     * Muestra el dialogo respectivo según el tipo de operación (Insert, Update o Delete) 
+     * indicada.
      * 
      * @param operationType tipo de operación a realizar.
      */
-    public void showDialog(OperationType operationType) {
+    public void showIupDialog(OperationType operationType) {
 
         KeyData keyData = null;
 
@@ -202,7 +227,7 @@ public class UserKeyShowView implements Initializable {
                 || operationType == OperationType.UPDATE) {
             try {
                 FXMLLoader loader = new FXMLLoader(ResourceManager
-                        .getFxDialog("UserKeyInsUpdView"));
+                        .getFxDialog("KeyDataInsUpdView"));
 
                 Scene scene = new Scene(loader.load());
                 scene.getStylesheets().add("/styles/styles.css");
@@ -238,6 +263,81 @@ public class UserKeyShowView implements Initializable {
     }
 
     /**
+     * Muestra el dialogo 'Acerca de...'
+     */
+    private void showDlgAbout() {
+
+        try {
+            FXMLLoader loader = new FXMLLoader(ResourceManager
+                    .getFxDialog("AboutView"));
+
+            Scene scene = new Scene(loader.load());
+            scene.getStylesheets().add("/styles/styles.css");
+
+            Stage stage = new Stage();
+            stage.setTitle("Acerca de Mini Key Vault");
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.getIcons().add(ImageFactory.IMG_APP_ICON);
+            stage.setScene(scene);
+            stage.setResizable(false);
+            stage.showAndWait();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    /**
+     * Muestra el dialogo para generar / importar Backups.
+     */
+    private void showDlgBackup() {
+
+        try {
+            FXMLLoader loader = new FXMLLoader(ResourceManager
+                    .getFxDialog("BackupView"));
+
+            Scene scene = new Scene(loader.load());
+            scene.getStylesheets().add("/styles/styles.css");
+
+            Stage stage = new Stage();
+            stage.setTitle("Generar / Restaurar Backup");
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.getIcons().add(ImageFactory.IMG_APP_ICON);
+            stage.setScene(scene);
+            stage.setResizable(false);
+            stage.showAndWait();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    /**
+     * Muestra el tooltip con el mensaje de 'Texto copiado'
+     * e inicia la transición para ocultar el dialogo.
+     * 
+     * @param x posición horizontal.
+     * @param y posición vertical.
+     */
+    private void showTooltipMessage(double x, double y) {
+
+        hideTooltipMessage();
+
+        tooltip.show(parentStage, x + 10.0, y + 5.0);
+        tooltipTransition.play();
+
+    }
+
+    /**
+     * Oculta el tooltip con el mensaje de 'Texto copiado'
+     * y detiene transición para ocultar el dialogo. 
+     */
+    private void hideTooltipMessage() {
+        tooltip.hide();
+        tooltipTransition.stop();
+    }
+    
+    /**
      * Metodo para recibir el Stage desde la clase que invoca la vista.
      * 
      * @param stage stage al que pertenece la vista.
@@ -249,6 +349,8 @@ public class UserKeyShowView implements Initializable {
                 (observable, oldValue, newValue) -> {
                     if (newValue.booleanValue()) {
                         btnFixit.setSelected(false);
+                    } else {
+                        hideTooltipMessage();
                     }
                 });
 

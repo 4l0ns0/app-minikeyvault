@@ -1,10 +1,10 @@
 package com.opencode.minikeyvault;
 
-import com.opencode.minikeyvault.model.db.Db;
 import com.opencode.minikeyvault.utils.Constants;
 import com.opencode.minikeyvault.utils.ImageFactory;
 import com.opencode.minikeyvault.utils.ResourceManager;
-import com.opencode.minikeyvault.view.UserKeyShowView;
+import com.opencode.minikeyvault.view.KeyDataMenuView;
+import com.opencode.minikeyvault.viewmodel.InitViewModel;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -22,25 +22,31 @@ import javafx.stage.Stage;
  */
 public class MainApp extends Application {
 
+    private final InitViewModel viewModel = InitViewModel.getInstance();
+
+    /**
+     * Constructor.
+     */
     public MainApp() {
-        Db.init();
+        viewModel.checkConfigFile();
+        viewModel.checkDatabase();
     }
 
     @Override
     public void start(Stage stage) throws Exception {
 
-        FXMLLoader loader = new FXMLLoader(ResourceManager.getFxView("UserKeyShowView"));
+        FXMLLoader loader = new FXMLLoader(ResourceManager.getFxView("KeyDataMenuView"));
         Parent root = loader.load();
 
-        UserKeyShowView view = loader.getController();
+        KeyDataMenuView view = loader.getController();
         view.setStage(stage);
 
         Scene scene = new Scene(root);
         scene.getStylesheets().add("/styles/styles.css");
+
         stage.setTitle(Constants.APP_NAME);
         stage.getIcons().add(ImageFactory.IMG_APP_ICON);
         stage.setScene(scene);
-        stage.setResizable(false);
         stage.show();
 
     }

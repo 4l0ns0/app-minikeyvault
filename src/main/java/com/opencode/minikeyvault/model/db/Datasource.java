@@ -1,7 +1,8 @@
 package com.opencode.minikeyvault.model.db;
 
+import com.opencode.minikeyvault.utils.ConfigFile;
+import com.opencode.minikeyvault.utils.Constants;
 import com.opencode.minikeyvault.utils.ResourceManager;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
@@ -10,12 +11,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Properties;
 import lombok.extern.slf4j.Slf4j;
 import org.h2.jdbcx.JdbcConnectionPool;
 import org.h2.tools.RunScript;
 
 /**
- * class: Db. <br/>
+ * class: Datasource. <br/>
  * @author Henry Navarro <br/>
  *         <br/>
  *         <u>Cambios</u>:<br/>
@@ -25,63 +27,81 @@ import org.h2.tools.RunScript;
  * @version 1.0
  */
 @Slf4j
-public class Db {
+public class Datasource {
 
     private static JdbcConnectionPool cp;
 
-    private static final String DRIVER_NAME = "jdbc:h2";
-    private static final String BD_NAME = "keystore";
-    private static final String BD_FILENAME = "keystore.mv.db";
-
-    private Db() {
-        throw new IllegalStateException(Db.class.getName());
+    private Datasource() {
+        throw new IllegalStateException(Datasource.class.getName());
     }
 
     /**
-     * Metodo que instancia el pool de conexiones y devuelve una intancia de conexion a 
-     * la base de datos.
+     * Metodo que crea el pool de conexiones y devuelve una intancia de conexion  
+     * a la base de datos.
      * 
      * @param onlyIfExist Si es true, únicamente se conectará a la bd si esta existe y 
      *     devolvera una excepción en caso esto no se cumpla. Caso contrario, si es 
-     *     false, si la bd no existe, intentará crear el archivo de base de datos.
+     *     false y la bd no existe, intentará crear el archivo de base de datos.
      * @return instancia de conexión.
-     * @throws SQLException excepción en caso ocurriera un error de conexión.
+     * @throws SQLException excepción en caso ocurriera un error.
      */
     private static Connection getConnectionFromPool(boolean onlyIfExist) throws SQLException {
 
         if (cp == null) {
-            cp = JdbcConnectionPool.create(DRIVER_NAME + ":./" + BD_NAME + ";IFEXISTS=" 
-                    + (onlyIfExist ? "TRUE" : "FALSE") + ";IGNORECASE=TRUE", 
-                    "kstoreUser", "s3cr3t-P@ss#K3yv4ult");
+            Properties prop = ConfigFile.getProperties();
+
+            cp = JdbcConnectionPool.create(Constants.DB_DRIVER + ":./" + Constants.DB_NAME 
+                    + ";IFEXISTS=" + (onlyIfExist ? "TRUE" : "FALSE") 
+                    + ";IGNORECASE=TRUE", 
+                    prop.getProperty(Constants.PROP_KEY_DB_USERNAME), 
+                    prop.getProperty(Constants.PROP_KEY_DB_PASSWORD));
         }
 
         return cp.getConnection();
     }
-    
+
     /**
      * Metodo para inicializar la base de datos.
      * 
-     * <p>Este metodo solo debe ser llamado cuando se desea inicializar la base de datos,
-     * es decir, se crea el archivo de base de datos y genera dentro todos los componentes
-     * necesarios. Si este metodo se ejecutara sobre una base de datos existente, devolveria
-     * un error.
+     * <p>Este metodo solo debe ser ejecutado cuando la base de datos no existe 
+     * y se desea inicializarla puesto que se conectará a la base de datos y se
+     * ejecutará un script para crear dentro todos los componentes necesarios.
+     * 
+     * @return true si se creó la base de datos, caso contrario false.
      */
-    public static void init() {
+    public static boolean init() {
 
-        if (new File(BD_FILENAME).exists()) {
-            log.debug("La base de datos ya existe, no es necesario inicializarla.");
-        } else {
-            Connection cn = null;
+        boolean result = false;
 
-            try (InputStreamReader reader = new InputStreamReader(ResourceManager
-                    .getScriptFile("bd-init.sql"), StandardCharsets.UTF_8)) {
-                cn = getConnectionFromPool(false);
-                RunScript.execute(cn, reader);
-            } catch (SQLException | IOException e) {
-                log.error("Error al iniciar la bd: {}", e.getMessage());
-            } finally {
-                Db.close(cn);
-            }
+        try (Connection cn = getConnectionFromPool(false);
+             InputStreamReader reader = new InputStreamReader(
+                     ResourceManager.getScriptFile("bd-init.sql"), 
+                     StandardCharsets.UTF_8)) {
+            RunScript.execute(cn, reader);
+
+            result = true;
+        } catch (SQLException | IOException e) {
+            log.error("Error al iniciar la bd: {}", e.getMessage());
+        }
+
+        return result;
+    }
+
+    /**
+     * Metodo para generar backups de la base de datos.
+     */
+    public static void generateBackup() {
+
+        PreparedStatement ps = null;
+
+        try {
+            //ps = getStatement("BACKUP TO 'backup/backup.zip'");
+            ps = getStatement("SCRIPT TO 'backup/backup.sql'");
+            ps.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            close(ps, true);
         }
 
     }
@@ -110,7 +130,7 @@ public class Db {
      */
     public static PreparedStatement getStatement(String sql) {
 
-        Connection cn = Db.getConnection();
+        Connection cn = Datasource.getConnection();
 
         if (cn != null) {
             try {

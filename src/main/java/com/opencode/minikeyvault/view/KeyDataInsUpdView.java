@@ -2,7 +2,7 @@ package com.opencode.minikeyvault.view;
 
 import com.opencode.minikeyvault.utils.ImageFactory;
 import com.opencode.minikeyvault.utils.ImageFactory.FontAwesome;
-import com.opencode.minikeyvault.viewmodel.UserKeyViewModel;
+import com.opencode.minikeyvault.viewmodel.KeyDataViewModel;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.binding.Bindings;
@@ -15,7 +15,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
-/** class: UserKeyInsUpdView. <br/>
+/** class: KeyDataInsUpdView. <br/>
  * @author Henry Navarro <br/><br/>
  *          <u>Cambios</u>:<br/>
  *          <ul>
@@ -23,9 +23,9 @@ import javafx.stage.Stage;
  *          </ul>
  * @version 1.0
  */
-public class UserKeyInsUpdView implements Initializable {
+public class KeyDataInsUpdView implements Initializable {
 
-    private final UserKeyViewModel viewModel = UserKeyViewModel.getInstance();
+    private final KeyDataViewModel viewModel = KeyDataViewModel.getInstance();
 
     @FXML BorderPane bpnPrincipal;
 

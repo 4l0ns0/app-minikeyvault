@@ -1,10 +1,10 @@
 package com.opencode.minikeyvault.viewmodel;
 
-import com.opencode.minikeyvault.model.IUserKeyModel;
-import com.opencode.minikeyvault.model.impl.UserKeyModel;
-import com.opencode.minikeyvault.view.commons.TableData;
+import com.opencode.minikeyvault.model.dao.UserKeyModel;
+import com.opencode.minikeyvault.model.dao.impl.UserKeyModelImpl;
+import com.opencode.minikeyvault.view.commons.KeyDataRow;
 import com.opencode.minikeyvault.view.dto.KeyData;
-import com.opencode.minikeyvault.viewmodel.converter.UserKeyConverter;
+import com.opencode.minikeyvault.viewmodel.converter.KeyDataConverter;
 import java.util.stream.Collectors;
 import javafx.animation.PauseTransition;
 import javafx.beans.property.IntegerProperty;
@@ -17,7 +17,7 @@ import javafx.util.Duration;
 import lombok.Synchronized;
 
 /** 
- * class: UserKeyViewModel. <br/>
+ * class: KeyDataViewModel. <br/>
  * @author Henry Navarro <br/><br/>
  *          <u>Cambios</u>:<br/>
  *          <ul>
@@ -25,9 +25,9 @@ import lombok.Synchronized;
  *          </ul>
  * @version 1.0
  */
-public class UserKeyViewModel {
+public class KeyDataViewModel {
 
-    private static UserKeyViewModel instance;
+    private static KeyDataViewModel instance;
 
     /**
      * Metodo para obtener la instancia de clase.
@@ -35,27 +35,14 @@ public class UserKeyViewModel {
      * @return instancia de la clase.
      */
     @Synchronized
-    public static UserKeyViewModel getInstance() {
+    public static KeyDataViewModel getInstance() {
 
         if (instance == null) {
-            instance = new UserKeyViewModel();
+            instance = new KeyDataViewModel();
         }
 
         return instance;
     }
-
-    private IUserKeyModel userKeyModel = new UserKeyModel();
-
-    private ObservableList<TableData> observableList = FXCollections.observableArrayList();
-
-    private IntegerProperty keyId = new SimpleIntegerProperty(0);
-    private StringProperty application = new SimpleStringProperty("");
-    private StringProperty description = new SimpleStringProperty("");
-    private StringProperty userName = new SimpleStringProperty("");
-    private StringProperty password = new SimpleStringProperty("");
-
-    private StringProperty filter = new SimpleStringProperty("");
-    private StringProperty userMessage = new SimpleStringProperty("");
 
     /**
      * class: OperationType. <br/>
@@ -67,18 +54,36 @@ public class UserKeyViewModel {
      * @version 1.0
      */
     public enum OperationType {
-        INSERT, UPDATE, DELETE 
+        INSERT, UPDATE, DELETE
     }
 
+    private UserKeyModel userKeyModel = new UserKeyModelImpl();
+
+    private ObservableList<KeyDataRow> observableList = FXCollections.observableArrayList();
+
+    private IntegerProperty keyId = new SimpleIntegerProperty(0);
+    private StringProperty application = new SimpleStringProperty("");
+    private StringProperty description = new SimpleStringProperty("");
+    private StringProperty userName = new SimpleStringProperty("");
+    private StringProperty password = new SimpleStringProperty("");
+
+    private StringProperty filter = new SimpleStringProperty("");
+    private StringProperty userMessage = new SimpleStringProperty("");
+
     private OperationType operationType;
+    private PauseTransition messageTransition;
 
     /**
      * Constructor.
      */
-    private UserKeyViewModel() {
+    private KeyDataViewModel() {
+        
+        messageTransition = new PauseTransition(Duration.seconds(8));
+        messageTransition.setOnFinished(event -> userMessage.set(""));
+
         fillObservableList(null);
     }
-
+    
     /**
      * Metodo para filtrar la información del observable.
      * 
@@ -89,7 +94,7 @@ public class UserKeyViewModel {
 
         observableList.setAll(userKeyModel
               .getAll(filter).stream()
-              .map(e -> new TableData(UserKeyConverter.convert(e)))
+              .map(e -> new KeyDataRow(KeyDataConverter.convert(e)))
               .collect(Collectors.toList()));
 
     }
@@ -127,13 +132,13 @@ public class UserKeyViewModel {
 
         switch (operationType) {
             case INSERT:
-                if (userKeyModel.insert(UserKeyConverter.convert(this)) != null) {
+                if (userKeyModel.insert(KeyDataConverter.convert(this)) != null) {
                     message = "El registro de creó correctamente.";
                 }
 
                 break;
             case UPDATE:
-                if (userKeyModel.update(UserKeyConverter.convert(this)) != null) {
+                if (userKeyModel.update(KeyDataConverter.convert(this)) != null) {
                     message = "El registro de modificó correctamente.";
                 }
 
@@ -154,7 +159,7 @@ public class UserKeyViewModel {
 
         String message = "Ocurrió un error. Revise el log para ver el detalle.";
 
-        if (userKeyModel.delete(UserKeyConverter.convert(this).getUserkeyId())) {
+        if (userKeyModel.delete(KeyDataConverter.convert(this).getUserkeyId())) {
             message = "El registro se eliminó correctamente";
         }
 
@@ -172,10 +177,7 @@ public class UserKeyViewModel {
     private void setUserMessage(String message) {
 
         userMessage.set(message);
-
-        PauseTransition visiblePause = new PauseTransition(Duration.seconds(8));
-        visiblePause.setOnFinished(event -> userMessage.set(""));
-        visiblePause.play();
+        messageTransition.play();
 
     }
     
@@ -202,7 +204,7 @@ public class UserKeyViewModel {
 
     }
     
-    public ObservableList<TableData> getObservableList() {
+    public ObservableList<KeyDataRow> getObservableList() {
         return observableList;
     }
 

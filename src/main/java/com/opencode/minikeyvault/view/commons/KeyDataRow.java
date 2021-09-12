@@ -14,7 +14,7 @@ import javafx.scene.layout.StackPane;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-/** class: TableData. <br/>
+/** class: KeyDataRow. <br/>
  * @author Henry Navarro <br/><br/>
  *          <u>Cambios</u>:<br/>
  *          <ul>
@@ -24,7 +24,7 @@ import lombok.Getter;
  */
 @AllArgsConstructor
 @Getter
-public class TableData {
+public class KeyDataRow {
 
     private KeyData keyData;
 
@@ -39,7 +39,7 @@ public class TableData {
      * 
      * @param keyData instancia del KeyData.
      */
-    public TableData(KeyData keyData) {
+    public KeyDataRow(KeyData keyData) {
 
         this.keyData = keyData;
 
@@ -96,7 +96,7 @@ public class TableData {
             return false;
         }
 
-        TableData other = (TableData) obj;
+        KeyDataRow other = (KeyDataRow) obj;
 
         return keyId == other.keyId
                 && Objects.equals(application, other.application)

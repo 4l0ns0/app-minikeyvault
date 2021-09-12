@@ -1,9 +1,9 @@
-package com.opencode.minikeyvault.model;
+package com.opencode.minikeyvault.model.dao;
 
 import com.opencode.minikeyvault.model.entity.UserKey;
 import java.util.List;
 
-/** interface: IUserKeyModel. <br/>
+/** interface: UserKeyModel. <br/>
  * @author Henry Navarro <br/><br/>
  *          <u>Cambios</u>:<br/>
  *          <ul>
@@ -11,7 +11,7 @@ import java.util.List;
  *          </ul>
  * @version 1.0
  */
-public interface IUserKeyModel {
+public interface UserKeyModel {
 
     List<UserKey> getAll(String filter);
 

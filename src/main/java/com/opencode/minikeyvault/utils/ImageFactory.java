@@ -1,6 +1,5 @@
 package com.opencode.minikeyvault.utils;
 
-import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
@@ -46,10 +45,10 @@ public class ImageFactory {
         FA_FLOPPY_O('\uf0c7'),
         FA_TIMES('\uf00d'),
         FA_TOGGLE_ON('\uf205'),
-        FA_TOGGLE_OFF('\uf204'),
-        FA_SIGN_OUT_ALT('\uf2f5')
-        
-        ;
+        FA_TOGGLE_OFF('\uf204')/*,
+        FA_SIGN_OUT_ALT('\uf2f5'),
+        FA_POWER_OFF('\uf011'),
+        FA_DOOR_OPEN('\uf52b')*/;
 
         private final Character character;
 
@@ -66,18 +65,22 @@ public class ImageFactory {
             return character.toString();
         }
     }
-    
+
     static {
+
+        Font.loadFont(ResourceManager.getFont("Font Awesome 5 Brands-Regular-400.otf")
+                .toExternalForm(), 20);
         Font.loadFont(ResourceManager.getFont("Font Awesome 5 Free-Regular-400.otf")
-                .toExternalForm(), 10);
+                .toExternalForm(), 20);
         Font.loadFont(ResourceManager.getFont("Font Awesome 5 Free-Solid-900.otf")
-                .toExternalForm(), 10);
+                .toExternalForm(), 20);
+
     }
 
     public static final String DEFAULT_FONT_FAMILY = "-fx-font-family: FontAwesome";
     public static final String DEFAULT_ICON_SIZE = "16.0";
     public static final String DEFAULT_FONT_SIZE = "1em";
-    
+
     /**
      * Metodo que devuelve una instancia de un Label cargado con el icono indicada.
      * <ul>
@@ -103,7 +106,7 @@ public class ImageFactory {
     public static Label getIconifiedLabel(FontAwesome icon, Double size) {
         return getIconifiedLabel(icon, size, null);
     }
-    
+
     /**
      * Metodo que devuelve una instancia de un Label cargado con el icono indicada.
      * 
@@ -115,11 +118,11 @@ public class ImageFactory {
     public static Label getIconifiedLabel(FontAwesome icon, Double size, String color) {
 
         String fontSize = "-fx-font-size: " + (size == null ? DEFAULT_ICON_SIZE : size);
-        String fontColor = StringUtils.isBlank(color) ? "" : "-fx-text-fill: " + color;
+        String fontColor = "-fx-text-fill: " + (StringUtils.isBlank(color) 
+                ? "-fx-text-inner-color" : color);
 
         Label label = new Label(icon.toString());
-        label.setPadding(new Insets(0.0));
-        label.getStyleClass().add("awesome");
+        label.getStyleClass().add("Awesome");
         label.setStyle(DEFAULT_FONT_FAMILY + ";" + fontSize + ";" + fontColor + ";");
 
         return label;
