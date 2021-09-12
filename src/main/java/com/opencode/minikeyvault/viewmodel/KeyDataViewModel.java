@@ -44,6 +44,19 @@ public class KeyDataViewModel {
         return instance;
     }
 
+    /**
+     * class: OperationType. <br/>
+     * @author Henry Navarro <br/><br/>
+     *          <u>Cambios</u>:<br/>
+     *          <ul>
+     *          <li>2021-08-30 Creación del proyecto.</li>
+     *          </ul>
+     * @version 1.0
+     */
+    public enum OperationType {
+        INSERT, UPDATE, DELETE
+    }
+
     private UserKeyModel userKeyModel = new UserKeyModelImpl();
 
     private ObservableList<KeyDataRow> observableList = FXCollections.observableArrayList();
@@ -57,28 +70,20 @@ public class KeyDataViewModel {
     private StringProperty filter = new SimpleStringProperty("");
     private StringProperty userMessage = new SimpleStringProperty("");
 
-    /**
-     * class: OperationType. <br/>
-     * @author Henry Navarro <br/><br/>
-     *          <u>Cambios</u>:<br/>
-     *          <ul>
-     *          <li>2021-08-30 Creación del proyecto.</li>
-     *          </ul>
-     * @version 1.0
-     */
-    public enum OperationType {
-        INSERT, UPDATE, DELETE 
-    }
-
     private OperationType operationType;
+    private PauseTransition messageTransition;
 
     /**
      * Constructor.
      */
     private KeyDataViewModel() {
+        
+        messageTransition = new PauseTransition(Duration.seconds(8));
+        messageTransition.setOnFinished(event -> userMessage.set(""));
+
         fillObservableList(null);
     }
-
+    
     /**
      * Metodo para filtrar la información del observable.
      * 
@@ -172,10 +177,7 @@ public class KeyDataViewModel {
     private void setUserMessage(String message) {
 
         userMessage.set(message);
-
-        PauseTransition visiblePause = new PauseTransition(Duration.seconds(8));
-        visiblePause.setOnFinished(event -> userMessage.set(""));
-        visiblePause.play();
+        messageTransition.play();
 
     }
     

@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
@@ -37,6 +38,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 /**
  * class: KeyDataMenuView. <br/>
@@ -52,13 +54,19 @@ public class KeyDataMenuView implements Initializable {
     private final KeyDataViewModel viewModel = KeyDataViewModel.getInstance();
 
     private Stage parentStage;
+    private Tooltip tooltip;
+    private PauseTransition tooltipTransition;
 
     @FXML BorderPane bpnPrincipal;
 
     @FXML CheckMenuItem chkAlwaysOnTop;
     @FXML CheckMenuItem chkFixItWhenCopyUser;
     @FXML CheckMenuItem chkFixItWhenCopyPassword;
+
     @FXML MenuItem mnuClose;
+    @FXML MenuItem mnuBackup;
+    @FXML MenuItem mnuHelp;
+    @FXML MenuItem mnuAbout;
 
     @FXML TextField txtFilter;
 
@@ -74,27 +82,34 @@ public class KeyDataMenuView implements Initializable {
     @FXML TableColumn<KeyDataRow, ?> tblColUserName;
     @FXML TableColumn<KeyDataRow, ?> tblColPassword;
 
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        ImageFactory.setIcon(mnuClose, FontAwesome.FA_FILE_O, 12.0);
-        mnuClose.setOnAction(e -> showDialog(OperationType.INSERT));
+        tooltip = new Tooltip("Texto copiado");
+
+        tooltipTransition = new PauseTransition(Duration.seconds(3));
+        tooltipTransition.setOnFinished(event -> tooltip.hide());
+
+        mnuClose.setOnAction(e -> parentStage.close());
+        mnuBackup.setOnAction(e -> showDlgBackup());
+        mnuAbout.setOnAction(e -> showDlgAbout());
 
         txtFilter.textProperty().bindBidirectional(viewModel.filterProperty());
         txtFilter.textProperty().addListener(
                 (observable, oldValue, newValue) -> viewModel.fillObservableList(newValue));
 
         ImageFactory.setIcon(btnInsert, FontAwesome.FA_FILE_O);
-        btnInsert.setOnAction(e -> showDialog(OperationType.INSERT));
+        btnInsert.setOnAction(e -> showIupDialog(OperationType.INSERT));
 
         ImageFactory.setIcon(btnUpdate, FontAwesome.FA_PENSIL);
-        btnUpdate.setOnAction(e -> showDialog(OperationType.UPDATE));
+        btnUpdate.setOnAction(e -> showIupDialog(OperationType.UPDATE));
         btnUpdate.disableProperty().bind(Bindings.createBooleanBinding(
                 () -> tblData.getSelectionModel().getSelectedItem() == null, 
                 tblData.getSelectionModel().selectedItemProperty()));
 
         ImageFactory.setIcon(btnDelete, FontAwesome.FA_TRASH_O);
-        btnDelete.setOnAction(e -> showDialog(OperationType.DELETE));
+        btnDelete.setOnAction(e -> showIupDialog(OperationType.DELETE));
         btnDelete.disableProperty().bind(Bindings.createBooleanBinding(
                 () -> tblData.getSelectionModel().getSelectedItem() == null, 
                 tblData.getSelectionModel().selectedItemProperty()));
@@ -107,10 +122,10 @@ public class KeyDataMenuView implements Initializable {
                     parentStage.setAlwaysOnTop(newValue);
                     
                     if (newValue.booleanValue()) {
-                        btnFixit.setText("Fijado: Si");
+                        btnFixit.setText("Bloquear");
                         ImageFactory.setIcon(btnFixit, FontAwesome.FA_TOGGLE_ON);
                     } else {
-                        btnFixit.setText("Fijado: No");
+                        btnFixit.setText("Bloquear");
                         ImageFactory.setIcon(btnFixit, FontAwesome.FA_TOGGLE_OFF);
                     }
                 });
@@ -179,22 +194,24 @@ public class KeyDataMenuView implements Initializable {
         passwordField.setOnMouseClicked(e -> {
             if (e.getButton().equals(MouseButton.PRIMARY) 
                     && e.getClickCount() == 2) {
-                Utils.copyToClipboard(passwordField.getText());
-
                 if (e.isControlDown()) {
                     btnFixit.setSelected(true);
                 }
+
+                Utils.copyToClipboard(passwordField.getText());
+                showTooltipMessage(e.getScreenX(), e.getScreenY());
             }
         });
 
     }
-    
+
     /**
-     * Muestra el dialogo respectivo según el tipo de operación indicada.
+     * Muestra el dialogo respectivo según el tipo de operación (Insert, Update o Delete) 
+     * indicada.
      * 
      * @param operationType tipo de operación a realizar.
      */
-    public void showDialog(OperationType operationType) {
+    public void showIupDialog(OperationType operationType) {
 
         KeyData keyData = null;
 
@@ -246,6 +263,81 @@ public class KeyDataMenuView implements Initializable {
     }
 
     /**
+     * Muestra el dialogo 'Acerca de...'
+     */
+    private void showDlgAbout() {
+
+        try {
+            FXMLLoader loader = new FXMLLoader(ResourceManager
+                    .getFxDialog("AboutView"));
+
+            Scene scene = new Scene(loader.load());
+            scene.getStylesheets().add("/styles/styles.css");
+
+            Stage stage = new Stage();
+            stage.setTitle("Acerca de Mini Key Vault");
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.getIcons().add(ImageFactory.IMG_APP_ICON);
+            stage.setScene(scene);
+            stage.setResizable(false);
+            stage.showAndWait();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    /**
+     * Muestra el dialogo para generar / importar Backups.
+     */
+    private void showDlgBackup() {
+
+        try {
+            FXMLLoader loader = new FXMLLoader(ResourceManager
+                    .getFxDialog("BackupView"));
+
+            Scene scene = new Scene(loader.load());
+            scene.getStylesheets().add("/styles/styles.css");
+
+            Stage stage = new Stage();
+            stage.setTitle("Generar / Restaurar Backup");
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.getIcons().add(ImageFactory.IMG_APP_ICON);
+            stage.setScene(scene);
+            stage.setResizable(false);
+            stage.showAndWait();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    /**
+     * Muestra el tooltip con el mensaje de 'Texto copiado'
+     * e inicia la transición para ocultar el dialogo.
+     * 
+     * @param x posición horizontal.
+     * @param y posición vertical.
+     */
+    private void showTooltipMessage(double x, double y) {
+
+        hideTooltipMessage();
+
+        tooltip.show(parentStage, x + 10.0, y + 5.0);
+        tooltipTransition.play();
+
+    }
+
+    /**
+     * Oculta el tooltip con el mensaje de 'Texto copiado'
+     * y detiene transición para ocultar el dialogo. 
+     */
+    private void hideTooltipMessage() {
+        tooltip.hide();
+        tooltipTransition.stop();
+    }
+    
+    /**
      * Metodo para recibir el Stage desde la clase que invoca la vista.
      * 
      * @param stage stage al que pertenece la vista.
@@ -257,6 +349,8 @@ public class KeyDataMenuView implements Initializable {
                 (observable, oldValue, newValue) -> {
                     if (newValue.booleanValue()) {
                         btnFixit.setSelected(false);
+                    } else {
+                        hideTooltipMessage();
                     }
                 });
 

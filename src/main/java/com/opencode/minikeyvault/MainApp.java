@@ -1,11 +1,10 @@
 package com.opencode.minikeyvault;
 
-import com.opencode.minikeyvault.model.db.Datasource;
-import com.opencode.minikeyvault.utils.ConfigFile;
 import com.opencode.minikeyvault.utils.Constants;
 import com.opencode.minikeyvault.utils.ImageFactory;
 import com.opencode.minikeyvault.utils.ResourceManager;
 import com.opencode.minikeyvault.view.KeyDataMenuView;
+import com.opencode.minikeyvault.viewmodel.InitViewModel;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -23,14 +22,14 @@ import javafx.stage.Stage;
  */
 public class MainApp extends Application {
 
+    private final InitViewModel viewModel = InitViewModel.getInstance();
+
     /**
      * Constructor.
      */
     public MainApp() {
-
-        ConfigFile.init();
-        Datasource.init();
-
+        viewModel.checkConfigFile();
+        viewModel.checkDatabase();
     }
 
     @Override

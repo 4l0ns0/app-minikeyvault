@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.input.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.scene.effect.*?>
 <?import javafx.geometry.*?>
@@ -28,7 +29,7 @@
 				</TableView>
 			</children>
 			<BorderPane.margin>
-				<Insets bottom="5.0" left="8.0" right="5.0" top="5.0" />
+				<Insets bottom="5.0" left="7.0" right="7.0" top="5.0" />
 			</BorderPane.margin>
 			<opaqueInsets>
 				<Insets />
@@ -42,27 +43,25 @@
       			<menus>
       				<Menu mnemonicParsing="false" text="Archivo">
       					<items>
-      						<CheckMenuItem fx:id="chkAlwaysOnTop" mnemonicParsing="false" text="Siempre visible" />
-      						<CheckMenuItem mnemonicParsing="false" text="Guardar estado" />
-      						<SeparatorMenuItem mnemonicParsing="false" />
-      						<MenuItem fx:id="mnuClose" mnemonicParsing="false" text="Cerrar" />
+      						<MenuItem fx:id="mnuClose" mnemonicParsing="false" text="Cerrar">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="C" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
+                           </accelerator></MenuItem>
       					</items>
       				</Menu>
-      				<Menu mnemonicParsing="false" text="Configuraciones">
+      				<Menu mnemonicParsing="false" text="Ejecutar">
       					<items>
-                        <Menu mnemonicParsing="false" text="Tabla">
-                          <items>
-                              <CheckMenuItem fx:id="chkFixItWhenCopyUser" mnemonicParsing="false" text="Fijar al copiar usuario" />
-                              <CheckMenuItem fx:id="chkFixItWhenCopyPassword" mnemonicParsing="false" text="Fijar al copiar password" />
-                          </items>
-                        </Menu>
-      						<MenuItem mnemonicParsing="false" text="Com" />
+                        <MenuItem fx:id="mnuBackup" mnemonicParsing="false" text="Backup">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="B" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
+                           </accelerator>
+                        </MenuItem>
       					</items>
       				</Menu>
       				<Menu mnemonicParsing="false" text="Ayuda">
       					<items>
-      						<MenuItem mnemonicParsing="false" text="Contenido de ayuda" />
-      						<MenuItem mnemonicParsing="false" text="Acerca de Mini Keyvault" />
+      						<MenuItem fx:id="mnuHelp" disable="true" mnemonicParsing="false" text="Cont. Ayuda" />
+      						<MenuItem fx:id="mnuAbout" mnemonicParsing="false" text="Acerca de" />
       					</items>
       				</Menu>
       			</menus>
@@ -80,7 +79,7 @@
                   <Label text="Busqueda:" />
 						<TextField fx:id="txtFilter" promptText="Ingrese texto a buscar..." />
                   <Separator orientation="VERTICAL" />
-                  <ToggleButton fx:id="btnFixit" alignment="CENTER_LEFT" mnemonicParsing="false" prefWidth="100.0" text="Fijado: No" />
+                  <ToggleButton fx:id="btnFixit" alignment="CENTER_LEFT" mnemonicParsing="false" prefWidth="100.0" text="Bloquear" />
               </items>
             </ToolBar>
          </children>
@@ -96,7 +95,7 @@
             </Label>
             <Separator orientation="VERTICAL" />
             <Label alignment="CENTER_RIGHT" text="Registros:" />
-            <Label fx:id="lblTotalRecords" alignment="CENTER_RIGHT" contentDisplay="CENTER" prefWidth="32.0" text="9">
+            <Label fx:id="lblTotalRecords" alignment="CENTER_RIGHT" contentDisplay="CENTER" prefWidth="32.0" text="0">
                <padding>
                   <Insets left="2.0" />
                </padding>
