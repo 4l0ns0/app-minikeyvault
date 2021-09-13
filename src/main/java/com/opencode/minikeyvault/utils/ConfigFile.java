@@ -82,6 +82,7 @@ public class ConfigFile {
                 properties.putIfAbsent(Constants.PROP_KEY_DB_PASSWORD, 
                         UUID.randomUUID().toString());
                 properties.store(output, null);
+
                 result = true;
             }
         } catch (Exception e) {

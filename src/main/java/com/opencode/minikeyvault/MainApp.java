@@ -28,8 +28,10 @@ public class MainApp extends Application {
      * Constructor.
      */
     public MainApp() {
+
         viewModel.checkConfigFile();
         viewModel.checkDatabase();
+
     }
 
     @Override

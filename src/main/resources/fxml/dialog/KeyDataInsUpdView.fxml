@@ -55,19 +55,19 @@
                      <GridPane.margin>
                         <Insets left="10.0" />
                      </GridPane.margin></Label>
-                  <Button fx:id="btnReveal" alignment="CENTER" contentDisplay="CENTER" ellipsisString="" graphicTextGap="0.0" maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefWidth="30.0" textAlignment="CENTER" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                  <Button fx:id="btnReveal" alignment="CENTER" contentDisplay="CENTER" ellipsisString="" graphicTextGap="0.0" mnemonicParsing="false" prefHeight="29.0" prefWidth="35.0" textAlignment="CENTER" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
                      <GridPane.margin>
-                        <Insets bottom="5.0" left="3.0" right="10.0" top="5.0" />
+                        <Insets bottom="5.0" right="10.0" top="5.0" />
                      </GridPane.margin>
                   </Button>
                   <TextField fx:id="txtPassword" GridPane.columnIndex="1" GridPane.rowIndex="3">
                      <GridPane.margin>
-                        <Insets bottom="5.0" left="8.0" top="5.0" />
+                        <Insets bottom="5.0" left="8.0" right="5.0" top="5.0" />
                      </GridPane.margin>
                   </TextField>
                   <PasswordField fx:id="pwdPassword" GridPane.columnIndex="1" GridPane.rowIndex="3">
                      <GridPane.margin>
-                        <Insets bottom="5.0" left="8.0" top="5.0" />
+                        <Insets bottom="5.0" left="8.0" right="5.0" top="5.0" />
                      </GridPane.margin>
                   </PasswordField>
                      </children>

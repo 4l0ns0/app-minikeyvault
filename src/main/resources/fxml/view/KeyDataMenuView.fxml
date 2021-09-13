@@ -79,7 +79,7 @@
                   <Label text="Busqueda:" />
 						<TextField fx:id="txtFilter" promptText="Ingrese texto a buscar..." />
                   <Separator orientation="VERTICAL" />
-                  <ToggleButton fx:id="btnFixit" alignment="CENTER_LEFT" mnemonicParsing="false" prefWidth="100.0" text="Bloquear" />
+                  <ToggleButton fx:id="btnLock" alignment="CENTER_LEFT" mnemonicParsing="false" prefWidth="100.0" text="Bloquear" />
               </items>
             </ToolBar>
          </children>
