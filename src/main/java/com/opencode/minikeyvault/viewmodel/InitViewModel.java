@@ -2,9 +2,13 @@ package com.opencode.minikeyvault.viewmodel;
 
 import com.opencode.minikeyvault.model.dao.InitModel;
 import com.opencode.minikeyvault.model.dao.impl.InitModelImpl;
+import com.opencode.minikeyvault.utils.ConfigFile;
 import com.opencode.minikeyvault.utils.Constants;
 import com.opencode.minikeyvault.utils.Constants.ResultType;
+import com.opencode.minikeyvault.view.dto.InitDetail;
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 import lombok.Synchronized;
 
 /** class: InitViewModel. <br/>
@@ -34,7 +38,12 @@ public class InitViewModel {
         return instance;
     }
 
-    private InitModel initModel = new InitModelImpl();
+    private final InitModel initModel = new InitModelImpl();
+
+    private ResultType configFileStatus;
+    private ResultType databaseStatus;
+
+    private InitDetail initDetail;
 
     /**
      * Constructor.
@@ -45,40 +54,61 @@ public class InitViewModel {
 
     /**
      * Verifica la existencia y correcta configuración del archivo de 
-     * configuración. En caso no exista, lo crea. 
+     * configuración. En caso este no exista, crea el archivo. 
      */
     public ResultType checkConfigFile() {
 
-        ResultType result = null;
-
         if (new File(Constants.PROP_FILENAME).exists()) {
             // XXX aqui se podría añadir una revision de los atributos del properties
-            result = ResultType.ALREADY_INITIALIZED;
+            configFileStatus = ResultType.ALREADY_INITIALIZED;
         } else {
-            result = initModel.initConfigFile() 
+            configFileStatus = initModel.initConfigFile() 
                     ? ResultType.INITIALIZED : ResultType.ERROR_ON_INITIALIZATION;
         }
 
-        return result;
+        return configFileStatus;
     }
 
     /**
      * Verifica la existencia y correcta configuración de la base de datos. 
-     * En caso no exista, la crea.
+     * En caso el archivo no exista, crea la base de datos.
      */
     public ResultType checkDatabase() {
 
-        ResultType result = null;
-
         if (new File(Constants.DB_FILENAME).exists()) {
             // XXX aqui se podría añadir una revision del estado de la bd
-            result = ResultType.ALREADY_INITIALIZED;
+            databaseStatus = ResultType.ALREADY_INITIALIZED;
         } else {
-            result = initModel.initDatabase() 
+            databaseStatus = initModel.initDatabase() 
                     ? ResultType.INITIALIZED : ResultType.ERROR_ON_INITIALIZATION;
         }
 
-        return result;
+        return databaseStatus;
+    }
+    
+    /**
+     * Recupera el detalle del proceso de inicialización en caso exista.
+     * 
+     * @return instancia de la clase con el detalle de la inicialización.
+     */
+    public InitDetail retrieveInitDetail() {
+
+        if (configFileStatus == ResultType.INITIALIZED 
+                && databaseStatus == ResultType.INITIALIZED) {
+
+            Map<String, String> mapDetail = new HashMap<>();
+            mapDetail.put("Usuario", ConfigFile.getValue(Constants.PROP_KEY_DB_USERNAME));
+            mapDetail.put("Password", ConfigFile.getValue(Constants.PROP_KEY_DB_PASSWORD));
+
+            initDetail = InitDetail.builder()
+                    .message("Se han inicializado los componentes del sistema. "
+                            + "Tome nota del usuario y clave de la base de datos "
+                            + "y guardelos en un lugar seguro.")
+                    .detail(mapDetail)
+                    .build();
+        }
+
+        return initDetail;
     }
 
 }

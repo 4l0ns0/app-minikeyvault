@@ -51,7 +51,7 @@
       				</Menu>
       				<Menu mnemonicParsing="false" text="Ejecutar">
       					<items>
-                        <MenuItem fx:id="mnuBackup" mnemonicParsing="false" text="Backup">
+                        <MenuItem fx:id="mnuBackup" disable="true" mnemonicParsing="false" text="Backup">
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="B" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
                            </accelerator>
@@ -79,7 +79,7 @@
                   <Label text="Busqueda:" />
 						<TextField fx:id="txtFilter" promptText="Ingrese texto a buscar..." />
                   <Separator orientation="VERTICAL" />
-                  <ToggleButton fx:id="btnFixit" alignment="CENTER_LEFT" mnemonicParsing="false" prefWidth="100.0" text="Bloquear" />
+                  <ToggleButton fx:id="btnLock" alignment="CENTER_LEFT" mnemonicParsing="false" prefWidth="100.0" text="Bloquear" />
               </items>
             </ToolBar>
          </children>
