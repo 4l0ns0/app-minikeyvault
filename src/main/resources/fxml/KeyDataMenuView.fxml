@@ -51,7 +51,7 @@
       				</Menu>
       				<Menu mnemonicParsing="false" text="Ejecutar">
       					<items>
-                        <MenuItem fx:id="mnuBackup" mnemonicParsing="false" text="Backup">
+                        <MenuItem fx:id="mnuBackup" disable="true" mnemonicParsing="false" text="Backup">
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="B" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
                            </accelerator>

@@ -7,10 +7,12 @@ import java.util.Objects;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.layout.Background;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -31,8 +33,8 @@ public class KeyDataRow {
     private int keyId;
     private String application;
     private String description;
-    private StackPane userName;
-    private StackPane password;
+    private HBox userName;
+    private HBox password;
 
     /**
      * Constructor de la clase.
@@ -52,18 +54,19 @@ public class KeyDataRow {
     }
 
     /**
-     * Genera una nueva instancia de un Stackpane, el cual contiene el 
-     * Passwordfield e ImageView a mostrar en la celda.
+     * Genera una nueva instancia de un HBox, el cual contiene el Passwordfield, encargado
+     * de mostrar la cadena de texto y la imagen (Fuente dentro de un Label) de copiar al
+     * portapapeles a mostrar la pasar el mouse encima de la celda.
      * 
-     * @param value cadena de texto que contendrá la celda.
-     * @return instancia de Stackpane.
+     * @param value cadena de texto que se desea cargar en el PasswordField.
+     * @return instancia de HBox.
      */
-    private StackPane getDataPaneInstance(String value) {
+    private HBox getDataPaneInstance(String value) {
 
-        Label imgCopy = ImageFactory.getIconifiedLabel(FontAwesome.FA_FILES_O, 14.0, null);
-        imgCopy.setVisible(false);
-        imgCopy.setOpacity(0.4);
-        imgCopy.setMouseTransparent(true);
+        Label lblImg = ImageFactory.getIconifiedLabel(FontAwesome.FA_FILES_O, 14.0, null);
+        lblImg.setVisible(false);
+        lblImg.setOpacity(0.4);
+        lblImg.setMinWidth(15);
 
         PasswordField pwdControl = new PasswordField();
         pwdControl.setText(value);
@@ -72,13 +75,15 @@ public class KeyDataRow {
         pwdControl.setBackground(Background.EMPTY);
         pwdControl.setPadding(new Insets(0.0));
         pwdControl.getStyleClass().add("not-selection-allowed");
+        pwdControl.setContextMenu(new ContextMenu());
 
-        StackPane stackPane = new StackPane();
-        stackPane.getChildren().addAll(pwdControl, imgCopy);
+        HBox hbox = new HBox(5);
+        hbox.getChildren().addAll(pwdControl, lblImg);
+        hbox.setAlignment(Pos.CENTER);
 
-        StackPane.setAlignment(imgCopy, Pos.CENTER_RIGHT);
+        HBox.setHgrow(pwdControl, Priority.ALWAYS);
 
-        return stackPane;
+        return hbox;
     }
 
     @Override

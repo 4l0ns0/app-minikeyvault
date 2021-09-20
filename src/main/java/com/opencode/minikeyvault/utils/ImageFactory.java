@@ -45,10 +45,10 @@ public class ImageFactory {
         FA_FLOPPY_O('\uf0c7'),
         FA_TIMES('\uf00d'),
         FA_TOGGLE_ON('\uf205'),
-        FA_TOGGLE_OFF('\uf204')/*,
-        FA_SIGN_OUT_ALT('\uf2f5'),
-        FA_POWER_OFF('\uf011'),
-        FA_DOOR_OPEN('\uf52b')*/;
+        FA_TOGGLE_OFF('\uf204'),
+        FA_SIGN_OUT('\uf08b'),
+        FA_DATABASE('\uf1c0'),
+        FA_QUESTION_CIRCLE_O('\uf29c');
 
         private final Character character;
 
@@ -67,14 +67,8 @@ public class ImageFactory {
     }
 
     static {
-
-        Font.loadFont(ResourceManager.getFont("Font Awesome 5 Brands-Regular-400.otf")
+        Font.loadFont(ResourceManager.getFont("FontAwesome.otf")
                 .toExternalForm(), 20);
-        Font.loadFont(ResourceManager.getFont("Font Awesome 5 Free-Regular-400.otf")
-                .toExternalForm(), 20);
-        Font.loadFont(ResourceManager.getFont("Font Awesome 5 Free-Solid-900.otf")
-                .toExternalForm(), 20);
-
     }
 
     public static final String DEFAULT_FONT_FAMILY = "-fx-font-family: FontAwesome";

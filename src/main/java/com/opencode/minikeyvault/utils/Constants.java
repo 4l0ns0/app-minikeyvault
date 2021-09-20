@@ -28,7 +28,7 @@ public class Constants {
         INITIALIZED, ALREADY_INITIALIZED, ERROR_ON_INITIALIZATION
     }
 
-    public static final String APP_NAME = "Mini - Key Vault";
+    public static final String APP_NAME = "Mini Key Vault";
 
     public static final String DB_DRIVER = "jdbc:h2";
     public static final String DB_NAME = "keystore";

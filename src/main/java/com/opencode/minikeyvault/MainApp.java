@@ -7,8 +7,10 @@ import com.opencode.minikeyvault.view.KeyDataMenuView;
 import com.opencode.minikeyvault.viewmodel.InitViewModel;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 /**
@@ -50,6 +52,10 @@ public class MainApp extends Application {
         stage.getIcons().add(ImageFactory.IMG_APP_ICON);
         stage.setScene(scene);
         stage.show();
+
+        Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
+        stage.setX((primScreenBounds.getWidth() - stage.getWidth()) / 2);
+        stage.setY((primScreenBounds.getHeight() - stage.getHeight()) / 2);
 
     }
 

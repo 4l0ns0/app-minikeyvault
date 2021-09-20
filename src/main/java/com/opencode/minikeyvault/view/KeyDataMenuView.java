@@ -6,7 +6,6 @@ import com.opencode.minikeyvault.utils.ResourceManager;
 import com.opencode.minikeyvault.utils.Utils;
 import com.opencode.minikeyvault.view.commons.KeyDataRow;
 import com.opencode.minikeyvault.view.dto.KeyData;
-import com.opencode.minikeyvault.viewmodel.InitViewModel;
 import com.opencode.minikeyvault.viewmodel.KeyDataViewModel;
 import com.opencode.minikeyvault.viewmodel.KeyDataViewModel.OperationType;
 import java.net.URL;
@@ -36,6 +35,7 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -51,7 +51,7 @@ import javafx.util.Duration;
  */
 public class KeyDataMenuView implements Initializable {
 
-    private final InitViewModel initViewModel = InitViewModel.getInstance();
+    //private final InitViewModel initViewModel = InitViewModel.getInstance();
     private final KeyDataViewModel keyDataViewModel = KeyDataViewModel.getInstance();
 
     private Stage parentStage;
@@ -91,8 +91,13 @@ public class KeyDataMenuView implements Initializable {
         tooltipTransition = new PauseTransition(Duration.seconds(3));
         tooltipTransition.setOnFinished(event -> tooltip.hide());
 
+        ImageFactory.setIcon(mnuClose, FontAwesome.FA_SIGN_OUT);
         mnuClose.setOnAction(e -> parentStage.close());
+        
+        ImageFactory.setIcon(mnuBackup, FontAwesome.FA_DATABASE);
         mnuBackup.setOnAction(e -> showBackupView());
+        
+        ImageFactory.setIcon(mnuAbout, FontAwesome.FA_QUESTION_CIRCLE_O);
         mnuAbout.setOnAction(e -> showAboutView());
 
         txtFilter.textProperty().bindBidirectional(keyDataViewModel.filterProperty());
@@ -138,28 +143,14 @@ public class KeyDataMenuView implements Initializable {
         tblData.setFocusTraversable(false);
         tblData.setItems(keyDataViewModel.getObservableList());
         tblData.setRowFactory(tableView -> {
-
             final TableRow<KeyDataRow> tableRow = new TableRow<>();
 
             tableRow.hoverProperty().addListener(listener -> {
+                KeyDataRow keyDataRow = tableRow.getItem();
 
-                final KeyDataRow keyDataRow = tableRow.getItem();
-
-                if (tableRow.isHover() && keyDataRow != null) {
-                    setCellBehavior(
-                            (PasswordField) keyDataRow.getUserName()
-                                .getChildren().get(0),
-                            (Label) keyDataRow.getUserName()
-                                .getChildren().get(1),
-                            tableRow.getIndex());
-
-                    setCellBehavior(
-                            (PasswordField) keyDataRow.getPassword()
-                                .getChildren().get(0),
-                            (Label) keyDataRow.getPassword()
-                                .getChildren().get(1),
-                            tableRow.getIndex());
-
+                if (keyDataRow != null && tableRow.isHover()) {
+                    setCellBehavior(keyDataRow.getUserName(), tableRow.getIndex());
+                    setCellBehavior(keyDataRow.getPassword(), tableRow.getIndex());
                 }
             });
 
@@ -174,30 +165,44 @@ public class KeyDataMenuView implements Initializable {
      * Metodo que define el comportamiento de los botones alojados en las celdas de 
      * las columnas usuario y password.
      * 
-     * @param passwordField objeto que contiene la información de la celda. 
-     * @param image imagen que muestra el icono de copiar.
-     * @param rowIndex fila a la que corresponden los valores.
+     * @param hbox instancia del componente de la celda. 
+     * @param rowIndex fila a la que corresponde el componente.
      */
-    private void setCellBehavior(PasswordField passwordField, Label image, int rowIndex) {
+    private void setCellBehavior(HBox hbox, int rowIndex) {
 
-        passwordField.setOnMouseEntered(e -> image.setVisible(true));
-        passwordField.setOnMouseExited(e -> image.setVisible(false));
-        passwordField.setOnMousePressed(e -> {
+        PasswordField pwd = (PasswordField) hbox.getChildren().get(0);
+        Label img = (Label) hbox.getChildren().get(1);
+
+        hbox.setOnMouseEntered(e -> img.setVisible(true));
+        hbox.setOnMouseExited(e -> img.setVisible(false));
+
+        pwd.setOnMousePressed(e -> {
             tblData.requestFocus();
             tblData.getSelectionModel().select(rowIndex);
         });
-        passwordField.setOnMouseClicked(e -> {
-            if (e.getButton().equals(MouseButton.PRIMARY) 
-                    && e.getClickCount() == 2) {
+
+        pwd.setOnMouseClicked(e -> {
+            if (e.getButton().equals(MouseButton.PRIMARY) && e.getClickCount() == 2) {
                 if (e.isControlDown()) {
                     btnLock.setSelected(true);
                 }
 
-                Utils.copyToClipboard(passwordField.getText());
+                Utils.copyToClipboard(pwd.getText());
                 showTooltipMessage(e.getScreenX(), e.getScreenY());
             }
         });
 
+        img.setOnMouseClicked(e -> {
+            if (e.getButton().equals(MouseButton.PRIMARY) && e.getClickCount() == 2) {
+                if (e.isControlDown()) {
+                    btnLock.setSelected(true);
+                }
+
+                Utils.copyToClipboard(pwd.getText());
+                showTooltipMessage(e.getScreenX(), e.getScreenY());
+            }
+        });
+        
     }
 
     /**
@@ -231,6 +236,8 @@ public class KeyDataMenuView implements Initializable {
 
             Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
             stage.getIcons().add(ImageFactory.IMG_APP_ICON);
+
+            centerParentStage(stage);
 
             Optional<ButtonType> result = alert.showAndWait();
 
@@ -272,7 +279,7 @@ public class KeyDataMenuView implements Initializable {
 
         try {
             FXMLLoader loader = new FXMLLoader(ResourceManager
-                    .getFxDialog(fxmlViewName));
+                    .getFxView(fxmlViewName));
 
             Scene scene = new Scene(loader.load());
             scene.getStylesheets().add("/styles/styles.css");
@@ -285,9 +292,11 @@ public class KeyDataMenuView implements Initializable {
             }
 
             stage.getIcons().add(ImageFactory.IMG_APP_ICON);
-            stage.setScene(scene);
             stage.setResizable(resizable);
-            
+            stage.setScene(scene);
+
+            centerParentStage(stage);
+
             if (showAndWait) {
                 stage.showAndWait();
             }
@@ -341,4 +350,26 @@ public class KeyDataMenuView implements Initializable {
 
     }
 
+    /**
+     * Metodo que centrara el stage con relacion al padre.
+     * @param stage stage que se desea centrar.
+     */
+    public void centerParentStage(Stage stage) {
+
+        // Se calcula la posición central de Stage padre
+        double x = parentStage.getX() + parentStage.getWidth() / 2d;
+        double y = parentStage.getY() + parentStage.getHeight() / 2d;
+
+        // Ocultamos el stage durante la reubicación.
+        stage.setOnShowing(ev -> stage.hide());
+
+        // Reubicamos y mostramos el stage
+        stage.setOnShown(ev -> {
+            stage.setX(x - stage.getWidth() / 2d);
+            stage.setY(y - stage.getHeight() / 2d);
+            stage.show();
+        });
+
+    }
+    
 }

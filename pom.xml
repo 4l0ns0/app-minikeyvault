@@ -4,7 +4,7 @@
 
     <groupId>com.opencode</groupId>
     <artifactId>minikeyvault</artifactId>
-    <version>0.2.0-SNAPSHOT</version>
+    <version>0.7.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>minikeyvault</name>
@@ -15,7 +15,7 @@
     </properties>
 
     <organization>
-        <name>Your Organisation</name>
+        <name>Proyecto personal</name>
     </organization>
 
 	<dependencies>
