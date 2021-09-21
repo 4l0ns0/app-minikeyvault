@@ -51,6 +51,8 @@ public class MainApp extends Application {
         stage.setTitle(Constants.APP_NAME);
         stage.getIcons().add(ImageFactory.IMG_APP_ICON);
         stage.setScene(scene);
+        stage.setMinWidth(569); // de acuerdo al fxml
+        stage.setMinHeight(277); // de acuerdo al fxml
         stage.show();
 
         Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();

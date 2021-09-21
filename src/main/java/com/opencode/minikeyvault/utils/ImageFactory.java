@@ -173,7 +173,7 @@ public class ImageFactory {
     }
 
     public static final Image IMG_APP_ICON = ResourceManager
-            .getImage("app-icon.gif");
+            .getImage("app-icon.png");
     
     /**
      * Metodo que devuelve un ImageView cargado con la imagen especificada.

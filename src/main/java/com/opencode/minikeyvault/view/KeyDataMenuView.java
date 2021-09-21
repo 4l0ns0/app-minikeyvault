@@ -93,7 +93,7 @@ public class KeyDataMenuView implements Initializable {
 
         ImageFactory.setIcon(mnuClose, FontAwesome.FA_SIGN_OUT);
         mnuClose.setOnAction(e -> parentStage.close());
-        
+
         ImageFactory.setIcon(mnuBackup, FontAwesome.FA_DATABASE);
         mnuBackup.setOnAction(e -> showBackupView());
         
@@ -173,8 +173,8 @@ public class KeyDataMenuView implements Initializable {
         PasswordField pwd = (PasswordField) hbox.getChildren().get(0);
         Label img = (Label) hbox.getChildren().get(1);
 
-        hbox.setOnMouseEntered(e -> img.setVisible(true));
-        hbox.setOnMouseExited(e -> img.setVisible(false));
+        hbox.setOnMouseEntered(e -> img.setPrefWidth(15)/*img.setVisible(true)*/);
+        hbox.setOnMouseExited(e -> img.setPrefWidth(0)/*img.setVisible(false)*/);
 
         pwd.setOnMousePressed(e -> {
             tblData.requestFocus();
@@ -220,7 +220,6 @@ public class KeyDataMenuView implements Initializable {
             keyData = tblData.getSelectionModel().getSelectedItem().getKeyData();
         }
 
-        btnLock.setSelected(false);
         keyDataViewModel.setOperationType(operationType, keyData);
 
         if (operationType == OperationType.INSERT 
@@ -228,6 +227,8 @@ public class KeyDataMenuView implements Initializable {
             showView("KeyDataInsUpdView", operationType == OperationType.INSERT 
                   ? "Nuevo Registro" : "Actualizar Registro", true, false, true);
         } else if (operationType == OperationType.DELETE) {
+            btnLock.setSelected(false);
+
             Alert alert = new Alert(AlertType.CONFIRMATION);
             alert.setTitle("Eliminar Registro");
             alert.setHeaderText(null);
@@ -276,6 +277,8 @@ public class KeyDataMenuView implements Initializable {
      */
     private void showView(String fxmlViewName, String title, boolean modal, 
             boolean resizable, boolean showAndWait) {
+
+        btnLock.setSelected(false);
 
         try {
             FXMLLoader loader = new FXMLLoader(ResourceManager
