@@ -10,6 +10,8 @@ package com.opencode.minikeyvault.model.dao;
  */
 public interface InitModel {
 
+    boolean initAppIcon();
+
     boolean initConfigFile();
 
     boolean initDatabase();

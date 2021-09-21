@@ -29,6 +29,9 @@ public class Constants {
     }
 
     public static final String APP_NAME = "Mini Key Vault";
+    public static final String APP_IMAGE = "app.png";
+    public static final String APP_ICON_FILE = "64x64.ico";
+    public static final String APP_ICON_NAME = "mkv.ico";
 
     public static final String DB_DRIVER = "jdbc:h2";
     public static final String DB_NAME = "keystore";

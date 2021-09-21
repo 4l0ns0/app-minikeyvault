@@ -71,12 +71,25 @@ public class ResourceManager {
         return getResourceAsStream(DIR_SCRIPTS, name);
     }
 
-    private static InputStream getResourceAsStream(String dir, String name) {
+    /**
+     * Devuelve un inputstream del recurso solicitado.
+     * 
+     * @param dir directorio.
+     * @param name nombre del archivo.
+     * @return inputstream.
+     */
+    public static InputStream getResourceAsStream(String dir, String name) {
         return ResourceManager.class.getClassLoader()
                 .getResourceAsStream(dir + "/" + name);
     }
 
-    private static URL getResource(String dir, String name) {
+    /**
+     * Devuelve la URL del recurso solicitado.
+     * @param dir directorio.
+     * @param name nombre del archivo.
+     * @return URL.
+     */
+    public static URL getResource(String dir, String name) {
         return ResourceManager.class.getClassLoader()
                 .getResource(dir + "/" + name);
     }
