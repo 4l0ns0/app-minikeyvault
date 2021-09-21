@@ -30,10 +30,9 @@ public class MainApp extends Application {
      * Constructor.
      */
     public MainApp() {
-
+        viewModel.checkAppIco();
         viewModel.checkConfigFile();
         viewModel.checkDatabase();
-
     }
 
     @Override

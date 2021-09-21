@@ -40,6 +40,7 @@ public class InitViewModel {
 
     private final InitModel initModel = new InitModelImpl();
 
+    private ResultType appIconStatus;
     private ResultType configFileStatus;
     private ResultType databaseStatus;
 
@@ -52,6 +53,21 @@ public class InitViewModel {
         
     }
 
+    /**
+     * Verifica la existencia del icono de la aplicación en el directorio. 
+     */
+    public ResultType checkAppIco() {
+
+        if (new File(Constants.APP_ICON_NAME).exists()) {
+            appIconStatus = ResultType.ALREADY_INITIALIZED;
+        } else {
+            appIconStatus = initModel.initAppIcon() 
+                    ? ResultType.INITIALIZED : ResultType.ERROR_ON_INITIALIZATION;
+        }
+
+        return appIconStatus;
+    }
+    
     /**
      * Verifica la existencia y correcta configuración del archivo de 
      * configuración. En caso este no exista, crea el archivo. 
