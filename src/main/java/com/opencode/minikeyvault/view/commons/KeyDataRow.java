@@ -64,9 +64,9 @@ public class KeyDataRow {
     private HBox getDataPaneInstance(String value) {
 
         Label lblImg = ImageFactory.getIconifiedLabel(FontAwesome.FA_FILES_O, 14.0, null);
-        lblImg.setVisible(false);
+        lblImg.setEllipsisString("");
         lblImg.setOpacity(0.4);
-        lblImg.setMinWidth(15);
+        lblImg.setPrefWidth(0);
 
         PasswordField pwdControl = new PasswordField();
         pwdControl.setText(value);

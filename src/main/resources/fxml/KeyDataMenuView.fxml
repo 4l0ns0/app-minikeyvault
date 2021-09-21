@@ -10,7 +10,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane fx:id="bpnPrincipal" prefHeight="276.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.opencode.minikeyvault.view.KeyDataMenuView">
+<BorderPane fx:id="bpnPrincipal" prefHeight="238.0" prefWidth="553.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.opencode.minikeyvault.view.KeyDataMenuView">
 	<center>
 		<VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="220.0" prefWidth="600.0" spacing="5.0" BorderPane.alignment="CENTER">
 			<children>
@@ -77,9 +77,9 @@
                      </opaqueInsets>
                   </Separator>
                   <Label text="Busqueda:" />
-						<TextField fx:id="txtFilter" promptText="Ingrese texto a buscar..." />
+						<TextField fx:id="txtFilter" maxWidth="1.7976931348623157E308" promptText="Ingrese texto a buscar..." />
                   <Separator orientation="VERTICAL" />
-                  <ToggleButton fx:id="btnLock" alignment="CENTER_LEFT" mnemonicParsing="false" prefWidth="100.0" text="Bloquear" />
+                  <ToggleButton fx:id="btnLock" alignment="CENTER_LEFT" mnemonicParsing="false" text="Bloquear" />
               </items>
             </ToolBar>
          </children>
