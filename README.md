@@ -4,7 +4,7 @@
 
 <br>
 <p align="center">
- <img src="https://user-images.githubusercontent.com/22823767/134610621-af4fb670-89d7-4ff8-89a7-2907afd1dab8.png" />
+ <img src="https://user-images.githubusercontent.com/22823767/134610621-af4fb670-89d7-4ff8-89a7-2907afd1dab8.png" width="250" height="250" />
 </p>
 <p align="center">
  Gracias Freepick por el logo :sunglasses: <i>(Icon made by Freepik from www.flaticon.com)</i>
