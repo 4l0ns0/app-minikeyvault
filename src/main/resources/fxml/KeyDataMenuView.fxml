@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.input.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.geometry.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane fx:id="bpnPrincipal" prefHeight="238.0" prefWidth="553.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.opencode.minikeyvault.view.KeyDataMenuView">
+	<center>
+		<VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="220.0" prefWidth="600.0" spacing="5.0" BorderPane.alignment="CENTER">
+			<children>
+				<TableView fx:id="tblData" VBox.vgrow="ALWAYS">
+					<columns>
+						<TableColumn fx:id="tblColApplication" prefWidth="180.0" text="Aplicación" />
+						<TableColumn fx:id="tblColUserName" prefWidth="197.0" text="Usuario" />
+						<TableColumn fx:id="tblColPassword" prefWidth="222.0" text="Password" />
+					</columns>
+					<VBox.margin>
+						<Insets />
+					</VBox.margin>
+					<columnResizePolicy>
+						<TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+					</columnResizePolicy>
+				</TableView>
+			</children>
+			<BorderPane.margin>
+				<Insets bottom="5.0" left="7.0" right="7.0" top="5.0" />
+			</BorderPane.margin>
+			<opaqueInsets>
+				<Insets />
+			</opaqueInsets>
+		</VBox>
+	</center>
+   <top>
+      <VBox BorderPane.alignment="CENTER">
+         <children>
+      		<MenuBar prefHeight="0.0" prefWidth="600.0">
+      			<menus>
+      				<Menu mnemonicParsing="false" text="Archivo">
+      					<items>
+      						<MenuItem fx:id="mnuClose" mnemonicParsing="false" text="Cerrar">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="C" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
+                           </accelerator></MenuItem>
+      					</items>
+      				</Menu>
+      				<Menu mnemonicParsing="false" text="Ejecutar">
+      					<items>
+                        <MenuItem fx:id="mnuBackup" disable="true" mnemonicParsing="false" text="Backup">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="B" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
+                           </accelerator>
+                        </MenuItem>
+      					</items>
+      				</Menu>
+      				<Menu mnemonicParsing="false" text="Ayuda">
+      					<items>
+      						<MenuItem fx:id="mnuHelp" disable="true" mnemonicParsing="false" text="Cont. Ayuda" />
+      						<MenuItem fx:id="mnuAbout" mnemonicParsing="false" text="Acerca de" />
+      					</items>
+      				</Menu>
+      			</menus>
+      		</MenuBar>
+            <ToolBar>
+              <items>
+      				<Button fx:id="btnInsert" ellipsisString="" mnemonicParsing="false" text="Nuevo" textAlignment="CENTER" />
+      				<Button fx:id="btnUpdate" mnemonicParsing="false" text="Editar" />
+      				<Button fx:id="btnDelete" mnemonicParsing="false" text="Eliminar" />
+                  <Separator orientation="VERTICAL">
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                  </Separator>
+                  <Label text="Busqueda:" />
+						<TextField fx:id="txtFilter" maxWidth="1.7976931348623157E308" promptText="Ingrese texto a buscar..." />
+                  <Separator orientation="VERTICAL" />
+                  <ToggleButton fx:id="btnLock" alignment="CENTER_LEFT" mnemonicParsing="false" text="Bloquear" />
+              </items>
+            </ToolBar>
+         </children>
+      </VBox>
+   </top>
+   <bottom>
+      <HBox spacing="5.0" BorderPane.alignment="CENTER">
+         <children>
+            <Label fx:id="lblMessage" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS">
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+            </Label>
+            <Separator orientation="VERTICAL" />
+            <Label alignment="CENTER_RIGHT" text="Registros:" />
+            <Label fx:id="lblTotalRecords" alignment="CENTER_RIGHT" contentDisplay="CENTER" prefWidth="32.0" text="0">
+               <padding>
+                  <Insets left="2.0" />
+               </padding>
+            </Label>
+         </children>
+         <BorderPane.margin>
+            <Insets left="10.0" right="10.0" />
+         </BorderPane.margin>
+         <padding>
+            <Insets bottom="3.0" />
+         </padding>
+      </HBox>
+   </bottom>
+</BorderPane>

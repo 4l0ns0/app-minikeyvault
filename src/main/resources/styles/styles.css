@@ -1,0 +1,52 @@
+
+/* 
+ * Evita que se seleccione el texto del Textbox cuando 
+ * se hace doble clic sobre este.
+ */
+.not-selection-allowed {
+    -fx-highlight-fill: null;
+	-fx-highlight-text-fill: null;
+}
+
+/*
+ * Elimina el borde que muestra la tabla al ser seleccionada. 
+ */
+.table-view, .table-view:focused {
+	-fx-background-color: transparent, -fx-box-border, -fx-control-inner-background;
+	-fx-background-insets: -1.4, 0.0, 1.0;
+	-fx-background-radius: 1.4, 0.0, 0.0;
+}
+
+/*
+ * Define la posicion del de las celdas y el espaciado.
+ */
+.table-cell {     
+    -fx-padding: 0 3;
+    -fx-alignment: CENTER-LEFT;
+}
+
+/*
+ * Define el color de fondo y los bordes de las celdas de la fila 
+ * sobre la que se pasa el mouse.
+ */
+.table-row-cell:filled:hover {
+    -fx-background-color: -fx-cell-hover-color;
+	-fx-table-cell-border-color: derive(-fx-cell-hover-color, 20%);
+}
+
+/*
+ * Define el color de fondo y los bordes de las celdas de la fila
+ * seleccionada.
+ */
+.table-row-cell:selected {
+	-fx-background-color: -fx-cell-hover-color;
+	-fx-table-cell-border-color: derive(-fx-cell-hover-color, 20%);
+}
+
+/*
+ * Define el color del texto de la fila seleccionada.
+ */
+.table-row-cell:selected .text {
+	-fx-fill: -fx-dark-text-color;
+}
+
