@@ -1,6 +1,6 @@
 <h1 align="center">Mini Key Vault (mkv)</h1>
 
-### Mini Key Vault es una aplicación que fue creada con la idea de que sirva como un almecén local de credenciales (usuarios y contraseñas) para las distintas aplicaciones que uno maneje en su día a día.
+### Mini Key Vault es una aplicación que fue creada con la idea de que sirva como un almacén local de credenciales (usuarios y contraseñas) de las distintas aplicaciones que uno utilice en su día a día.
 
 <br>
 <p align="center">
@@ -10,13 +10,13 @@
  Gracias Freepick por el logo :sunglasses: <i>(Icon made by Freepik from www.flaticon.com)</i>
 </p>
 
-El termino "mini" sirve para denotar simplicidad, ya que esta aplicación no busca ofrecer altos estandares de seguridad para protejer la información almacenada, sino mas bién, lo que se buscó fue crear una aplicación en donde se pueda centralizar esta información (Con mecanismos básicos de seguridad) y ofrecer una forma rápida y sencilla de obtener las credenciales que se desean.
+El termino "mini" sirve para denotar simplicidad, ya que esta aplicación lo que realmente busca es centrarse en la practicidad, ofreciendo únicamente mecanismos básicos de seguridad en favor de la sencillez de uso. Es decir, lo que se busca es que sea una aplicación facil de usar y permita obtener rápidamente la información deseada.
 
 Algunas de las funcionalidades que la aplicación ofrece son:
 
-* Permite insertar, modificar y eliminar los registros de forma sencilla. Así como también, listar los registros existentes.
-* Se puede filtrar los registros para ubicar rapidamente las credenciales que se necesitan.
-* Permite copiar de forma rápida en el porta papeles del sistema las credenciales que se deseen para poder usarlas en donde se necesiten.
+* Permite insertar, modificar, eliminar y listar los registros de forma sencilla.
+* Se pueden filtrar los registros para ubicar rapidamente las credenciales que se necesitan.
+* Permite copiar de forma rápida en el portapapeles del sistema las credenciales que se deseen para poder usarlas en donde se necesiten.
 * Permite hacer backups de la infomación (Pendiente :grin:)
 
 Tecnologías
