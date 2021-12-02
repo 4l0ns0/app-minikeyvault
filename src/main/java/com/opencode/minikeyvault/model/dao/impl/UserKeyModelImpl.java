@@ -128,8 +128,8 @@ public class UserKeyModelImpl implements UserKeyModel {
                 userKey.setUserkeyId(keys.getInt(1));
             }
         } catch (SQLException e) {
-            log.error("Ocurrieron errores al insertar el registro "
-                    + "en la BD: {}", e.getMessage());
+            log.error("Ocurrieron errores al insertar el "
+                    + "registro en la BD: {}", e.getMessage());
         } finally {
             Datasource.close(ps, true);
         }

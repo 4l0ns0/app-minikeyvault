@@ -109,6 +109,8 @@ public class KeyDataViewModel {
      */
     public void setOperationType(OperationType operationType, KeyData keyData) {
 
+        clean();
+
         this.operationType = operationType;
 
         if ((operationType == OperationType.UPDATE || operationType == OperationType.DELETE) 
