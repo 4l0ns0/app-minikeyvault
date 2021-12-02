@@ -34,7 +34,7 @@ public class AboutView implements Initializable {
     public void initialize(URL arg0, ResourceBundle arg1) {
 
         txtTitle.setText("Mini Key Vault para el almacenamiento de credenciales.");
-        txtVersion.setText("Última version: 0.7.0");
+        txtVersion.setText("Última version: 0.7.1");
         txtDetail.setText(new StringBuilder()
                 .append("Este producto puede ser usado de forma gratuita con fines personales ")
                 .append("y/o empresariales. A su vez, este puede ser compartido, prestado y ")
