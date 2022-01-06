@@ -135,7 +135,7 @@ public class KeyDataViewModel {
         switch (operationType) {
             case INSERT:
                 if (userKeyModel.insert(KeyDataConverter.convert(this)) != null) {
-                    message = "El registro de creó correctamente.";
+                    message = "El registro se creó correctamente.";
                 }
 
                 break;

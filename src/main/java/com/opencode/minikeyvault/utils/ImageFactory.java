@@ -52,7 +52,7 @@ public class ImageFactory {
 
         private final Character character;
 
-        private FontAwesome(char character) {
+        FontAwesome(char character) {
             this.character = character;
         }
 

@@ -6,7 +6,6 @@ import com.opencode.minikeyvault.viewmodel.KeyDataViewModel;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.binding.Bindings;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -56,12 +55,12 @@ public class KeyDataInsUpdView implements Initializable {
             txtPassword.setVisible(!txtPassword.isVisible());
             pwdPassword.setVisible(!pwdPassword.isVisible());
             
-            ImageFactory.setIcon(btnReveal, (pwdPassword.isVisible()
-                    ? FontAwesome.FA_EYE : FontAwesome.FA_EYE_SLASH), 12.0);
+            ImageFactory.setIcon(btnReveal, pwdPassword.isVisible()
+                    ? FontAwesome.FA_EYE : FontAwesome.FA_EYE_SLASH, 12.0);
         });
 
         ImageFactory.setIcon(btnSave, FontAwesome.FA_FLOPPY_O);
-        btnSave.setOnAction(this::save);
+        btnSave.setOnAction(e -> save());
         btnSave.disableProperty().bind(
                 Bindings.createBooleanBinding(() -> txtApplication.getText().trim().isEmpty(),
                         txtApplication.textProperty())
@@ -74,18 +73,18 @@ public class KeyDataInsUpdView implements Initializable {
         );
 
         ImageFactory.setIcon(btnCancel, FontAwesome.FA_TIMES);
-        btnCancel.setOnAction(this::close);
+        btnCancel.setOnAction(e -> close());
 
     }
 
-    private void save(ActionEvent event) {
+    private void save() {
 
         viewModel.insUpd();
-        close(null);
+        close();
 
     }
 
-    private void close(ActionEvent event) {
+    private void close() {
 
         viewModel.clean();
         Stage stage = (Stage) bpnPrincipal.getScene().getWindow();

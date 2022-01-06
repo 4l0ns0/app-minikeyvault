@@ -18,6 +18,7 @@ public class ResourceManager {
     private static final String DIR_FXMLVIEWS = "fxml";
     private static final String DIR_IMAGES = "images";
     private static final String DIR_SCRIPTS = "scripts";
+    private static final String DIR_STYLES = "styles";
 
     private ResourceManager() {
         throw new IllegalStateException(ResourceManager.class.getName());
@@ -34,7 +35,8 @@ public class ResourceManager {
     }
 
     /**
-     * Devuelve la referencia al archivo (FXML) solicitado.
+     * Devuelve la referencia a la vista (FXML) solicitado.
+     * 
      * @param name nombre del archivo (Sin extensión).
      * @return referencia al archivo.
      */
@@ -72,26 +74,38 @@ public class ResourceManager {
     }
 
     /**
+     * Devuelve la referencia a la hoja de estilos (CSS) solicitada.
+     * 
+     * @param name nombre del archivo (Sin extensión).
+     * @return referencia al archivo.
+     */
+    public static URL getCssStyle(String name) {
+        return getResource(DIR_STYLES, name);
+    }
+
+    /**
      * Devuelve un inputstream del recurso solicitado.
      * 
-     * @param dir directorio.
+     * @param dir nombre del directorio dentro del cual se ubica el archivo.
+     *     null en caso se encuentre directamente dentro de 'resources'.
      * @param name nombre del archivo.
      * @return inputstream.
      */
     public static InputStream getResourceAsStream(String dir, String name) {
-        return ResourceManager.class.getClassLoader()
-                .getResourceAsStream(dir + "/" + name);
+        return ResourceManager.class.getResourceAsStream(
+                (dir != null ? "/" + dir : "")  + "/" + name);
     }
 
     /**
      * Devuelve la URL del recurso solicitado.
-     * @param dir directorio.
+     * @param dir nombre del directorio dentro del cual se ubica el archivo.
+     *     null en caso se encuentre directamente dentro de 'resources'.
      * @param name nombre del archivo.
      * @return URL.
      */
     public static URL getResource(String dir, String name) {
-        return ResourceManager.class.getClassLoader()
-                .getResource(dir + "/" + name);
+        return ResourceManager.class.getResource(
+                (dir != null ? "/" + dir : "")  + "/" + name);
     }
 
 }

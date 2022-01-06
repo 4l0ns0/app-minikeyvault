@@ -130,8 +130,8 @@ public class KeyDataMenuView implements Initializable {
                             : FontAwesome.FA_TOGGLE_OFF);
                 });
 
-        lblTotalRecords.textProperty().bind(Bindings.size((keyDataViewModel
-                .getObservableList())).asString());
+        lblTotalRecords.textProperty().bind(Bindings.size(keyDataViewModel
+                .getObservableList()).asString());
 
         lblMessage.textProperty().bind(keyDataViewModel.getUserMessage());
 
@@ -285,7 +285,7 @@ public class KeyDataMenuView implements Initializable {
                     .getFxView(fxmlViewName));
 
             Scene scene = new Scene(loader.load());
-            scene.getStylesheets().add("/styles/styles.css");
+            scene.getStylesheets().add(ResourceManager.getCssStyle("styles.css").toString());
 
             Stage stage = new Stage();
             stage.setTitle(title);

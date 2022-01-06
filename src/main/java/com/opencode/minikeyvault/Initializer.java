@@ -14,7 +14,7 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 /**
- * class: MainApp. <br/>
+ * class: Initializer. <br/>
  * @author Henry Navarro <br/><br/>
  *          <u>Cambios</u>:<br/>
  *          <ul>
@@ -22,14 +22,14 @@ import javafx.stage.Stage;
  *          </ul>
  * @version 1.0
  */
-public class MainApp extends Application {
+public class Initializer extends Application {
 
     private final InitViewModel viewModel = InitViewModel.getInstance();
 
     /**
      * Constructor.
      */
-    public MainApp() {
+    public Initializer() {
         viewModel.checkAppIco();
         viewModel.checkConfigFile();
         viewModel.checkDatabase();
@@ -39,13 +39,14 @@ public class MainApp extends Application {
     public void start(Stage stage) throws Exception {
 
         FXMLLoader loader = new FXMLLoader(ResourceManager.getFxView("KeyDataMenuView"));
+
         Parent root = loader.load();
 
         KeyDataMenuView view = loader.getController();
         view.setStage(stage);
 
         Scene scene = new Scene(root);
-        scene.getStylesheets().add("/styles/styles.css");
+        scene.getStylesheets().add(ResourceManager.getCssStyle("styles.css").toString());
 
         stage.setTitle(Constants.APP_NAME);
         stage.getIcons().add(ImageFactory.IMG_APP_ICON);

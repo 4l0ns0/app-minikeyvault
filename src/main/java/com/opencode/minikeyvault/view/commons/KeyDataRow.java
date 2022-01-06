@@ -24,8 +24,8 @@ import lombok.Getter;
  *          </ul>
  * @version 1.0
  */
-@AllArgsConstructor
 @Getter
+@AllArgsConstructor
 public class KeyDataRow {
 
     private KeyData keyData;
