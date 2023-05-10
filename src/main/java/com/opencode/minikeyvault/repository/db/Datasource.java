@@ -1,6 +1,5 @@
-package com.opencode.minikeyvault.model.db;
+package com.opencode.minikeyvault.repository.db;
 
-import com.opencode.minikeyvault.utils.ConfigFile;
 import com.opencode.minikeyvault.utils.Constants;
 import com.opencode.minikeyvault.utils.ResourceManager;
 import java.io.IOException;
@@ -11,7 +10,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Properties;
+
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.h2.jdbcx.JdbcConnectionPool;
 import org.h2.tools.RunScript;
@@ -27,64 +28,91 @@ import org.h2.tools.RunScript;
  * @version 1.0
  */
 @Slf4j
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Datasource {
 
-    private static JdbcConnectionPool cp;
+    private static JdbcConnectionPool connectionPool;
 
-    private Datasource() {
-        throw new IllegalStateException(Datasource.class.getName());
+    /**
+     * Método para inicializar (crear) la base de datos.
+     *
+     * @param username usuario de la base de datos.
+     * @param password clave de la base de datos.
+     * @return detalle del error (en caso de error), caso contrario null.
+     */
+    public static String init(String username, String password) {
+
+        String error = null;
+
+        try (Connection cn = getConnectionFromPool(username, password, false);
+             InputStreamReader reader = new InputStreamReader(
+                     ResourceManager.getScriptFile("bd-init.sql"),
+                     StandardCharsets.UTF_8)) {
+            RunScript.execute(cn, reader);
+
+            return null;
+        } catch (SQLException | IOException e) {
+            connectionPool = null;
+            error = e.getMessage();
+            e.printStackTrace();
+        }
+
+        return error;
     }
 
     /**
-     * Metodo que crea el pool de conexiones y devuelve una intancia de conexion  
+     * Método para aperturar la base de datos.
+     *
+     * @param username usuario de la base de datos.
+     * @param password clave de la base de datos.
+     * @return detalle del error (en caso de error), caso contrario null.
+     */
+    public static String open(String username, String password) {
+
+        String error = null;
+
+        try (Connection cn = getConnectionFromPool(username, password, true)) {
+            if (cn != null) {
+                return null;
+            }
+        } catch (SQLException e) {
+            connectionPool = null;
+
+            if (e.getErrorCode() == 28000) {
+                error = "Usuario o clave incorrecta.";
+            } else {
+                error = e.getMessage();
+            }
+
+            e.printStackTrace();
+        }
+
+        return error;
+    }
+
+    /**
+     * Metodo que crea el pool de conexiones y devuelve una instancia de conexión
      * a la base de datos.
-     * 
+     *
+     * @param username usuario de la base de datos.
+     * @param password clave de la base de datos.
      * @param onlyIfExist Si es true, únicamente se conectará a la bd si esta existe y 
      *     devolvera una excepción en caso esto no se cumpla. Caso contrario, si es 
      *     false y la bd no existe, intentará crear el archivo de base de datos.
      * @return instancia de conexión.
      * @throws SQLException excepción en caso ocurriera un error.
      */
-    private static Connection getConnectionFromPool(boolean onlyIfExist) throws SQLException {
+    private static Connection getConnectionFromPool(
+            String username, String password, boolean onlyIfExist) throws SQLException {
 
-        if (cp == null) {
-            Properties prop = ConfigFile.getProperties();
-
-            cp = JdbcConnectionPool.create(Constants.DB_DRIVER + ":./" + Constants.DB_NAME 
+        if (connectionPool == null) {
+            connectionPool = JdbcConnectionPool.create(
+                    Constants.DB_DRIVER + ":./" + Constants.DB_NAME
                     + ";IFEXISTS=" + (onlyIfExist ? "TRUE" : "FALSE") 
-                    + ";IGNORECASE=TRUE", 
-                    prop.getProperty(Constants.PROP_KEY_DB_USERNAME), 
-                    prop.getProperty(Constants.PROP_KEY_DB_PASSWORD));
+                    + ";IGNORECASE=TRUE", username, password);
         }
 
-        return cp.getConnection();
-    }
-
-    /**
-     * Metodo para inicializar la base de datos.
-     * 
-     * <p>Este metodo solo debe ser ejecutado cuando la base de datos no existe 
-     * y se desea inicializarla puesto que se conectará a la base de datos y se
-     * ejecutará un script para crear dentro todos los componentes necesarios.
-     * 
-     * @return true si se creó la base de datos, caso contrario false.
-     */
-    public static boolean init() {
-
-        boolean result = false;
-
-        try (Connection cn = getConnectionFromPool(false);
-             InputStreamReader reader = new InputStreamReader(
-                     ResourceManager.getScriptFile("bd-init.sql"), 
-                     StandardCharsets.UTF_8)) {
-            RunScript.execute(cn, reader);
-
-            result = true;
-        } catch (SQLException | IOException e) {
-            log.error("Error al iniciar la bd: {}", e.getMessage());
-        }
-
-        return result;
+        return connectionPool.getConnection();
     }
 
     /**
@@ -92,16 +120,12 @@ public class Datasource {
      */
     public static void generateBackup() {
 
-        PreparedStatement ps = null;
-
-        try {
-            //ps = getStatement("BACKUP TO 'backup/backup.zip'");
-            ps = getStatement("SCRIPT TO 'backup/backup.sql'");
-            ps.execute();
-        } catch (SQLException e) {
+        try (PreparedStatement ps = getStatement("SCRIPT TO 'backup/backup.sql'")) {
+            if (ps != null) {
+                ps.execute();
+            } // XXX añadir logica para manejar los distintos tipos de backup
+        } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            close(ps, true);
         }
 
     }
@@ -109,12 +133,13 @@ public class Datasource {
     /**
      * Metodo para obtener una nueva instancia de Connection.
      * 
-     * @return nueva instancia de Connection. Null en caso de errror.
+     * @return nueva instancia de Connection. Null en caso de error.
      */
     public static Connection getConnection() {
 
         try {
-            return getConnectionFromPool(true);
+            return connectionPool != null
+                    ? connectionPool.getConnection() : null;
         } catch (SQLException e) {
             log.error("Error al generar el connection: {}", e.getMessage());
         }
@@ -126,7 +151,7 @@ public class Datasource {
      * Metodo para obtener una nueva instancia de PreparedStatement.
      * 
      * @param sql query que ejecutará el statement
-     * @return nueva instancia de PreparedStatement. Null en caso de errror.
+     * @return nueva instancia de PreparedStatement. Null en caso de error.
      */
     public static PreparedStatement getStatement(String sql) {
 
@@ -156,7 +181,7 @@ public class Datasource {
      * Cierra el PreparedStatement recibido.
      * 
      * @param ps PreparedStatement a cerrar.
-     * @param closeAll true si se desea cerrar tambien el Connection relacionado. 
+     * @param closeAll true si se desea cerrar también el Connection relacionado.
      *     Caso contrario, false.
      */
     public static void close(PreparedStatement ps, boolean closeAll) {
@@ -182,7 +207,7 @@ public class Datasource {
      * Cierra el Statement recibido.
      * 
      * @param st Statement a cerrar.
-     * @param closeAll true si se desea cerrar tambien el Connection relacionado. 
+     * @param closeAll true si se desea cerrar también el Connection relacionado.
      *     Caso contrario, false.
      */
     public static void close(Statement st, boolean closeAll) {
@@ -208,7 +233,7 @@ public class Datasource {
      * Cierra el ResultSet recibido.
      * 
      * @param rs ResultSet a cerrar.
-     * @param closeAll true si se desea cerrar tambien el Statement y el 
+     * @param closeAll true si se desea cerrar también el Statement y el
      *     Connection relacionado. Caso contrario, false.
      */
     public static void close(ResultSet rs, boolean closeAll) {
@@ -302,9 +327,9 @@ public class Datasource {
      * @param ps PreparedStatement a cerrar.
      * @param rs ResultSet a cerrar.
      */
-    private static void close(Connection cn, Statement st, 
+    private static void close(Connection cn, Statement st,
             PreparedStatement ps, ResultSet rs) {
-        
+
         try {
             if (rs != null) {
                 rs.close();
@@ -320,7 +345,7 @@ public class Datasource {
         } catch (SQLException e) {
             log.debug("Error al cerrar el Statement {}", e.getMessage());
         }
-        
+
         try {
             if (ps != null) {
                 ps.close();
@@ -328,7 +353,7 @@ public class Datasource {
         } catch (SQLException e) {
             log.debug("Error al cerrar el PreparedStatement {}", e.getMessage());
         }
-        
+
         try {
             if (cn != null) {
                 cn.close();
@@ -336,7 +361,7 @@ public class Datasource {
         } catch (SQLException e) {
             log.debug("Error al cerrar el Connection {}", e.getMessage());
         }
-        
+
     }
-    
+
 }

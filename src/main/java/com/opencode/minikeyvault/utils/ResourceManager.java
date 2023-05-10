@@ -3,6 +3,8 @@ package com.opencode.minikeyvault.utils;
 import java.io.InputStream;
 import java.net.URL;
 import javafx.scene.image.Image;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 /** class: ResourceManager. <br/>
  * @author Henry Navarro <br/><br/>
@@ -12,6 +14,7 @@ import javafx.scene.image.Image;
  *          </ul>
  * @version 1.0
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ResourceManager {
 
     private static final String DIR_FONTS = "fonts";
@@ -19,10 +22,6 @@ public class ResourceManager {
     private static final String DIR_IMAGES = "images";
     private static final String DIR_SCRIPTS = "scripts";
     private static final String DIR_STYLES = "styles";
-
-    private ResourceManager() {
-        throw new IllegalStateException(ResourceManager.class.getName());
-    }
 
     /**
      * Devuelve la referencia al archivo de fuente solicitada.

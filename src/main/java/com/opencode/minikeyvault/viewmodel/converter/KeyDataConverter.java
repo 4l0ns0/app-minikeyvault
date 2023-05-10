@@ -1,8 +1,8 @@
 package com.opencode.minikeyvault.viewmodel.converter;
 
-import com.opencode.minikeyvault.model.entity.UserKey;
-import com.opencode.minikeyvault.view.dto.KeyData;
-import com.opencode.minikeyvault.viewmodel.KeyDataViewModel;
+import com.opencode.minikeyvault.entity.UserKey;
+import com.opencode.minikeyvault.domain.KeyData;
+import com.opencode.minikeyvault.viewmodel.MainViewModel;
 
 /** class: KeyDataConverter. <br/>
  * @author Henry Navarro <br/><br/>
@@ -25,7 +25,7 @@ public class KeyDataConverter {
      * @param viewModel instancia del viewModel.
      * @return instancia del objeto
      */
-    public static UserKey convert(KeyDataViewModel viewModel) {
+    public static UserKey convert(MainViewModel viewModel) {
         return new UserKey(viewModel.idProperty().get(), 
                 viewModel.applicationProperty().get(), 
                 viewModel.descriptionProperty().get(), 

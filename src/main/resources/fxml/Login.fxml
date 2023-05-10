@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.shape.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.scene.control.*?>
@@ -7,21 +8,21 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.BorderPane?>
 
-<BorderPane prefWidth="390.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.opencode.minikeyvault.view.InitView">
+<BorderPane fx:id="bpnPrincipal" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.opencode.minikeyvault.view.LoginView">
    <top>
       <HBox BorderPane.alignment="CENTER">
          <children>
-            <Label text="Nota.- Se debe crear un usuario y contraseña para la aplicación. Si lo desea, puede definir valores distintos a los propuestos. Se aconseja además, guardar las credenciales en un lugar seguro en caso pueda olvidarlas." textAlignment="JUSTIFY" wrapText="true">
+            <Label fx:id="lblTitle" alignment="CENTER" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" text="Titulo" textAlignment="CENTER" wrapText="true" HBox.hgrow="ALWAYS">
                <font>
-                  <Font size="11.0" />
+                  <Font name="System Bold" size="16.0" />
                </font>
                <HBox.margin>
-                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                  <Insets top="10.0" />
                </HBox.margin>
             </Label>
          </children>
          <BorderPane.margin>
-            <Insets left="5.0" right="5.0" top="5.0" />
+            <Insets left="8.0" right="8.0" top="5.0" />
          </BorderPane.margin>
       </HBox>
    </top>
@@ -36,7 +37,9 @@
         <rowConstraints>
           <RowConstraints vgrow="NEVER" />
           <RowConstraints vgrow="NEVER" />
+            <RowConstraints vgrow="NEVER" />
           <RowConstraints prefHeight="30.0" vgrow="NEVER" />
+            <RowConstraints vgrow="NEVER" />
         </rowConstraints>
          <children>
             <Label text="Usuario">
@@ -59,17 +62,17 @@
                   <Insets bottom="5.0" left="8.0" right="5.0" top="5.0" />
                </GridPane.margin>
             </TextField>
-            <Button fx:id="btnLogin" mnemonicParsing="false" text="Ingresar" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
+            <Button fx:id="btnOk" mnemonicParsing="false" text="Aceptar" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
                <GridPane.margin>
                   <Insets right="5.0" top="5.0" />
                </GridPane.margin>
             </Button>
-            <CheckBox fx:id="chkRemerber" mnemonicParsing="false" text="Recordar (*)" GridPane.columnIndex="1" GridPane.rowIndex="2">
+            <CheckBox fx:id="chkRemember" mnemonicParsing="false" text="Recordar" GridPane.columnIndex="1" GridPane.rowIndex="3">
                <GridPane.margin>
                   <Insets left="8.0" />
                </GridPane.margin>
             </CheckBox>
-            <Button fx:id="btnReveal" ellipsisString="" mnemonicParsing="false" prefHeight="29.0" prefWidth="35.0" GridPane.columnIndex="3" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.vgrow="NEVER">
+            <Button fx:id="btnReveal" alignment="CENTER" contentDisplay="CENTER" ellipsisString="" graphicTextGap="0.0" mnemonicParsing="false" prefWidth="33.0" GridPane.columnIndex="3" GridPane.rowIndex="1">
                <GridPane.margin>
                   <Insets right="5.0" />
                </GridPane.margin>
@@ -86,20 +89,32 @@
       </GridPane>
    </center>
    <bottom>
-      <HBox BorderPane.alignment="CENTER">
+      <VBox>
          <children>
-            <Label text="(*) Al marcar la opción 'Recordar', las credenciales se guardarán en el archivo de propiedades (mkv.properties) de la aplicación para loguearse automáticamente. Esto también lo puede hacer más adelante." textAlignment="JUSTIFY" wrapText="true">
-               <font>
-                  <Font name="System Italic" size="11.0" />
-               </font>
-               <HBox.margin>
+            <Separator>
+               <VBox.margin>
+                  <Insets top="5.0" />
+               </VBox.margin>
+            </Separator>
+            <HBox BorderPane.alignment="CENTER">
+               <BorderPane.margin>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-               </HBox.margin>
-            </Label>
+               </BorderPane.margin>
+               <children>
+                  <Label fx:id="lblMessage" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS">
+                     <opaqueInsets>
+                        <Insets top="1.0" />
+                     </opaqueInsets>
+                  </Label>
+               </children>
+               <VBox.margin>
+                  <Insets bottom="5.0" top="5.0" />
+               </VBox.margin>
+            </HBox>
          </children>
          <BorderPane.margin>
-            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+            <Insets left="8.0" right="8.0" top="5.0" />
          </BorderPane.margin>
-      </HBox>
+      </VBox>
    </bottom>
 </BorderPane>

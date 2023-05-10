@@ -1,9 +1,9 @@
 package com.opencode.minikeyvault.viewmodel;
 
-import com.opencode.minikeyvault.model.dao.UserKeyModel;
-import com.opencode.minikeyvault.model.dao.impl.UserKeyModelImpl;
+import com.opencode.minikeyvault.model.dao.MngDb;
+import com.opencode.minikeyvault.model.dao.impl.LocalDbImpl;
 import com.opencode.minikeyvault.view.commons.KeyDataRow;
-import com.opencode.minikeyvault.view.dto.KeyData;
+import com.opencode.minikeyvault.domain.KeyData;
 import com.opencode.minikeyvault.viewmodel.converter.KeyDataConverter;
 import java.util.stream.Collectors;
 import javafx.animation.PauseTransition;
@@ -17,7 +17,7 @@ import javafx.util.Duration;
 import lombok.Synchronized;
 
 /** 
- * class: KeyDataViewModel. <br/>
+ * class: MainViewModel. <br/>
  * @author Henry Navarro <br/><br/>
  *          <u>Cambios</u>:<br/>
  *          <ul>
@@ -25,9 +25,9 @@ import lombok.Synchronized;
  *          </ul>
  * @version 1.0
  */
-public class KeyDataViewModel {
+public class MainViewModel {
 
-    private static KeyDataViewModel instance;
+    private static MainViewModel instance;
 
     /**
      * Metodo para obtener la instancia de clase.
@@ -35,10 +35,10 @@ public class KeyDataViewModel {
      * @return instancia de la clase.
      */
     @Synchronized
-    public static KeyDataViewModel getInstance() {
+    public static MainViewModel getInstance() {
 
         if (instance == null) {
-            instance = new KeyDataViewModel();
+            instance = new MainViewModel();
         }
 
         return instance;
@@ -57,7 +57,7 @@ public class KeyDataViewModel {
         INSERT, UPDATE, DELETE
     }
 
-    private UserKeyModel userKeyModel = new UserKeyModelImpl();
+    private final MngDb mngDb = new LocalDbImpl();
 
     private ObservableList<KeyDataRow> observableList = FXCollections.observableArrayList();
 
@@ -76,7 +76,7 @@ public class KeyDataViewModel {
     /**
      * Constructor.
      */
-    private KeyDataViewModel() {
+    private MainViewModel() {
         
         messageTransition = new PauseTransition(Duration.seconds(8));
         messageTransition.setOnFinished(event -> userMessage.set(""));
@@ -91,11 +91,10 @@ public class KeyDataViewModel {
      *     el filtro indicado.
      */
     public void fillObservableList(String filter) {
-
-        observableList.setAll(userKeyModel
-              .getAll(filter).stream()
-              .map(e -> new KeyDataRow(KeyDataConverter.convert(e)))
-              .collect(Collectors.toList()));
+        observableList.setAll(
+                mngDb.retriveUserKeyList(filter).stream()
+                        .map(e -> new KeyDataRow(KeyDataConverter.convert(e)))
+                        .collect(Collectors.toList()));
 
     }
 
@@ -134,13 +133,13 @@ public class KeyDataViewModel {
 
         switch (operationType) {
             case INSERT:
-                if (userKeyModel.insert(KeyDataConverter.convert(this)) != null) {
+                if (mngDb.createUserKey(KeyDataConverter.convert(this)) != null) {
                     message = "El registro se creó correctamente.";
                 }
 
                 break;
             case UPDATE:
-                if (userKeyModel.update(KeyDataConverter.convert(this)) != null) {
+                if (mngDb.modifyUserKey(KeyDataConverter.convert(this)) != null) {
                     message = "El registro de modificó correctamente.";
                 }
 
@@ -161,7 +160,7 @@ public class KeyDataViewModel {
 
         String message = "Ocurrió un error. Revise el log para ver el detalle.";
 
-        if (userKeyModel.delete(KeyDataConverter.convert(this).getUserkeyId())) {
+        if (mngDb.removeUserKey(KeyDataConverter.convert(this).getUserkeyId())) {
             message = "El registro se eliminó correctamente";
         }
 

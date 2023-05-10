@@ -1,6 +1,7 @@
 package com.opencode.minikeyvault.utils;
 
 import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,6 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
@@ -27,18 +30,15 @@ import org.apache.commons.lang3.StringUtils;
  * @version 1.0
  */
 @Slf4j
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Utils {
 
     private static ObjectMapper mapper = new ObjectMapper()
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-    
-    private Utils() {
-        throw new IllegalStateException(Utils.class.getName());
-    }
 
     private static Clipboard clipboard = Clipboard.getSystemClipboard();
     private static ClipboardContent content = new ClipboardContent();
-    
+
     /**
      * Metodo que coloca en el porta papeles la cadena de texto recibida.
      * 
@@ -148,5 +148,48 @@ public class Utils {
 
         return new ArrayList<>();
     }
-    
+
+    public static <T> T mapJsonStringToObjectFailSave(String string, Class<T> clazz) {
+
+        try {
+            return mapJsonStringToObject(string, clazz);
+        } catch (JsonProcessingException e) {
+            log.error("Ocurrio un error al crear el objeto en base la " +
+                    "representación json: {}", e.getMessage());
+        }
+
+        return null;
+    }
+
+    public static <T> T mapJsonStringToObject(String string, Class<T> clazz) throws JsonProcessingException {
+        return mapper.readValue(string, clazz);
+    }
+
+    /**
+     * Método que genera la representación json del objeto recibido.
+     *
+     * @param object objeto a partir del cual se desea genera la cadena de texto.
+     * @return cadena de texto.
+     */
+    public static String getAsJsonStringFailSave(Object object) {
+
+        try {
+            return getAsJsonString(object);
+        } catch (JsonProcessingException e) {
+            log.error("Ocurrio un error al generar la representación json del objeto: {}", e.getMessage());
+        }
+
+        return null;
+    }
+
+    /**
+     * Método que genera la representación json del objeto recibido.
+     *
+     * @param object objeto a partir del cual se desea genera la cadena de texto.
+     * @return cadena de texto.
+     */
+    public static String getAsJsonString(Object object) throws JsonProcessingException {
+        return mapper.writeValueAsString(object);
+    }
+
 }

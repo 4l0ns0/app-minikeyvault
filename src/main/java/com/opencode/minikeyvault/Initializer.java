@@ -1,16 +1,9 @@
 package com.opencode.minikeyvault;
 
-import com.opencode.minikeyvault.utils.Constants;
-import com.opencode.minikeyvault.utils.ImageFactory;
 import com.opencode.minikeyvault.utils.ResourceManager;
-import com.opencode.minikeyvault.view.KeyDataMenuView;
-import com.opencode.minikeyvault.viewmodel.InitViewModel;
+import com.opencode.minikeyvault.view.LoginView;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Rectangle2D;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 /**
@@ -24,40 +17,14 @@ import javafx.stage.Stage;
  */
 public class Initializer extends Application {
 
-    private final InitViewModel viewModel = InitViewModel.getInstance();
-
-    /**
-     * Constructor.
-     */
-    public Initializer() {
-        viewModel.checkAppIco();
-        viewModel.checkConfigFile();
-        viewModel.checkDatabase();
-    }
-
     @Override
     public void start(Stage stage) throws Exception {
 
-        FXMLLoader loader = new FXMLLoader(ResourceManager.getFxView("KeyDataMenuView"));
+        FXMLLoader loader = new FXMLLoader(ResourceManager.getFxView("Login"));
+        loader.load();
 
-        Parent root = loader.load();
-
-        KeyDataMenuView view = loader.getController();
+        LoginView view = loader.getController();
         view.setStage(stage);
-
-        Scene scene = new Scene(root);
-        scene.getStylesheets().add(ResourceManager.getCssStyle("styles.css").toString());
-
-        stage.setTitle(Constants.APP_NAME);
-        stage.getIcons().add(ImageFactory.IMG_APP_ICON);
-        stage.setScene(scene);
-        stage.setMinWidth(569); // de acuerdo al fxml
-        stage.setMinHeight(277); // de acuerdo al fxml
-        stage.show();
-
-        Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
-        stage.setX((primScreenBounds.getWidth() - stage.getWidth()) / 2);
-        stage.setY((primScreenBounds.getHeight() - stage.getHeight()) / 2);
 
     }
 

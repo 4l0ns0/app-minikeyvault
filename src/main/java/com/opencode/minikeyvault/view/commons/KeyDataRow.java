@@ -2,7 +2,7 @@ package com.opencode.minikeyvault.view.commons;
 
 import com.opencode.minikeyvault.utils.ImageFactory;
 import com.opencode.minikeyvault.utils.ImageFactory.FontAwesome;
-import com.opencode.minikeyvault.view.dto.KeyData;
+import com.opencode.minikeyvault.domain.KeyData;
 import java.util.Objects;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;

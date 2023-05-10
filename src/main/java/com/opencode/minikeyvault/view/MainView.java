@@ -5,9 +5,9 @@ import com.opencode.minikeyvault.utils.ImageFactory.FontAwesome;
 import com.opencode.minikeyvault.utils.ResourceManager;
 import com.opencode.minikeyvault.utils.Utils;
 import com.opencode.minikeyvault.view.commons.KeyDataRow;
-import com.opencode.minikeyvault.view.dto.KeyData;
-import com.opencode.minikeyvault.viewmodel.KeyDataViewModel;
-import com.opencode.minikeyvault.viewmodel.KeyDataViewModel.OperationType;
+import com.opencode.minikeyvault.domain.KeyData;
+import com.opencode.minikeyvault.viewmodel.MainViewModel;
+import com.opencode.minikeyvault.viewmodel.MainViewModel.OperationType;
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -41,7 +41,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 /**
- * class: KeyDataMenuView. <br/>
+ * class: MainView. <br/>
  * @author Henry Navarro <br/><br/>
  *          <u>Cambios</u>:<br/>
  *          <ul>
@@ -49,20 +49,15 @@ import javafx.util.Duration;
  *          </ul>
  * @version 1.0
  */
-public class KeyDataMenuView implements Initializable {
+public class MainView implements Initializable {
 
-    //private final InitViewModel initViewModel = InitViewModel.getInstance();
-    private final KeyDataViewModel keyDataViewModel = KeyDataViewModel.getInstance();
+    private final MainViewModel mainViewModel = MainViewModel.getInstance();
 
     private Stage parentStage;
     private Tooltip tooltip;
     private PauseTransition tooltipTransition;
 
     @FXML BorderPane bpnPrincipal;
-
-    @FXML CheckMenuItem chkAlwaysOnTop;
-    @FXML CheckMenuItem chkFixItWhenCopyUser;
-    @FXML CheckMenuItem chkFixItWhenCopyPassword;
 
     @FXML MenuItem mnuClose;
     @FXML MenuItem mnuBackup;
@@ -83,9 +78,10 @@ public class KeyDataMenuView implements Initializable {
     @FXML TableColumn<KeyDataRow, ?> tblColUserName;
     @FXML TableColumn<KeyDataRow, ?> tblColPassword;
 
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        
+
         tooltip = new Tooltip("Texto copiado");
 
         tooltipTransition = new PauseTransition(Duration.seconds(3));
@@ -100,9 +96,9 @@ public class KeyDataMenuView implements Initializable {
         ImageFactory.setIcon(mnuAbout, FontAwesome.FA_QUESTION_CIRCLE_O);
         mnuAbout.setOnAction(e -> showAboutView());
 
-        txtFilter.textProperty().bindBidirectional(keyDataViewModel.filterProperty());
+        txtFilter.textProperty().bindBidirectional(mainViewModel.filterProperty());
         txtFilter.textProperty().addListener((observable, oldValue, newValue) 
-                -> keyDataViewModel.fillObservableList(newValue));
+                -> mainViewModel.fillObservableList(newValue));
 
         ImageFactory.setIcon(btnInsert, FontAwesome.FA_FILE_O);
         btnInsert.setOnAction(e -> showIudView(OperationType.INSERT));
@@ -130,10 +126,10 @@ public class KeyDataMenuView implements Initializable {
                             : FontAwesome.FA_TOGGLE_OFF);
                 });
 
-        lblTotalRecords.textProperty().bind(Bindings.size(keyDataViewModel
+        lblTotalRecords.textProperty().bind(Bindings.size(mainViewModel
                 .getObservableList()).asString());
 
-        lblMessage.textProperty().bind(keyDataViewModel.getUserMessage());
+        lblMessage.textProperty().bind(mainViewModel.getUserMessage());
 
         tblColApplication.setCellValueFactory(new PropertyValueFactory<>("application"));
         tblColUserName.setCellValueFactory(new PropertyValueFactory<>("userName"));
@@ -141,7 +137,7 @@ public class KeyDataMenuView implements Initializable {
 
         tblData.setEditable(false);
         tblData.setFocusTraversable(false);
-        tblData.setItems(keyDataViewModel.getObservableList());
+        tblData.setItems(mainViewModel.getObservableList());
         tblData.setRowFactory(tableView -> {
             final TableRow<KeyDataRow> tableRow = new TableRow<>();
 
@@ -158,7 +154,6 @@ public class KeyDataMenuView implements Initializable {
         });
 
         Platform.runLater(() -> txtFilter.requestFocus());
-
     }
 
     /**
@@ -173,8 +168,8 @@ public class KeyDataMenuView implements Initializable {
         PasswordField pwd = (PasswordField) hbox.getChildren().get(0);
         Label img = (Label) hbox.getChildren().get(1);
 
-        hbox.setOnMouseEntered(e -> img.setPrefWidth(15)/*img.setVisible(true)*/);
-        hbox.setOnMouseExited(e -> img.setPrefWidth(0)/*img.setVisible(false)*/);
+        hbox.setOnMouseEntered(e -> img.setPrefWidth(15));
+        hbox.setOnMouseExited(e -> img.setPrefWidth(0));
 
         pwd.setOnMousePressed(e -> {
             tblData.requestFocus();
@@ -220,11 +215,11 @@ public class KeyDataMenuView implements Initializable {
             keyData = tblData.getSelectionModel().getSelectedItem().getKeyData();
         }
 
-        keyDataViewModel.setOperationType(operationType, keyData);
+        mainViewModel.setOperationType(operationType, keyData);
 
         if (operationType == OperationType.INSERT 
                 || operationType == OperationType.UPDATE) {
-            showView("KeyDataInsUpdView", operationType == OperationType.INSERT 
+            showView("CrudDlg", operationType == OperationType.INSERT
                   ? "Nuevo Registro" : "Actualizar Registro", true, false, true);
         } else if (operationType == OperationType.DELETE) {
             btnLock.setSelected(false);
@@ -243,30 +238,30 @@ public class KeyDataMenuView implements Initializable {
             Optional<ButtonType> result = alert.showAndWait();
 
             if (result.isPresent() && result.get() == ButtonType.OK) {
-                keyDataViewModel.delete();
+                mainViewModel.delete();
             }
         }
 
     }
 
     /**
-     * Muestra el dialogo para generar / importar Backups.
+     * Muestra el diálogo para generar / importar Backups.
      */
     private void showBackupView() {
-        showView("BackupView", "Generar / Restaurar Backup", true, false, true);
+        showView("Backup", "Generar / Restaurar Backup", true, false, true);
     }
 
     /**
      * Muestra el dialogo 'Acerca de...'
      */
     private void showAboutView() {
-        showView("AboutView", "Acerca de Mini Key Vault", true, false, true);
+        showView("About", "Acerca de Mini Key Vault", true, false, true);
     }
 
     /**
      * Metodo para cargar la vista solicitada.
      * 
-     * @param fxmlViewName nombre de la vista (FXML) sin extensió.
+     * @param fxmlViewName nombre de la vista (FXML) sin extensión.
      * @param title titulo para la ventana.
      * @param modal true si se quiere que la ventana sea de tipo modal, 
      *     caso contario false.
@@ -311,7 +306,7 @@ public class KeyDataMenuView implements Initializable {
     
     /**
      * Muestra el tooltip con el mensaje de 'Texto copiado'
-     * e inicia la transición para ocultar el dialogo.
+     * e inicia la transición para ocultar el diálogo.
      * 
      * @param x posición horizontal.
      * @param y posición vertical.
@@ -327,13 +322,13 @@ public class KeyDataMenuView implements Initializable {
 
     /**
      * Oculta el tooltip con el mensaje de 'Texto copiado'
-     * y detiene transición para ocultar el dialogo. 
+     * y detiene transición para ocultar el diálogo.
      */
     private void hideTooltipMessage() {
         tooltip.hide();
         tooltipTransition.stop();
     }
-    
+
     /**
      * Metodo para recibir el Stage desde la clase que invoca la vista.
      * 
@@ -351,10 +346,14 @@ public class KeyDataMenuView implements Initializable {
                     }
                 });
 
+        parentStage.show();
+        parentStage.hide();
+
     }
 
     /**
-     * Metodo que centrara el stage con relacion al padre.
+     * Metodo que centrara el stage con relación al padre.
+     *
      * @param stage stage que se desea centrar.
      */
     public void centerParentStage(Stage stage) {
@@ -363,10 +362,10 @@ public class KeyDataMenuView implements Initializable {
         double x = parentStage.getX() + parentStage.getWidth() / 2d;
         double y = parentStage.getY() + parentStage.getHeight() / 2d;
 
-        // Ocultamos el stage durante la reubicación.
+        // Se oculta el stage durante la reubicación.
         stage.setOnShowing(ev -> stage.hide());
 
-        // Reubicamos y mostramos el stage
+        // Se reubica y muestra el stage
         stage.setOnShown(ev -> {
             stage.setX(x - stage.getWidth() / 2d);
             stage.setY(y - stage.getHeight() / 2d);

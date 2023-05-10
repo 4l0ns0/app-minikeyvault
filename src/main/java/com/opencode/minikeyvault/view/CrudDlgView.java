@@ -2,7 +2,7 @@ package com.opencode.minikeyvault.view;
 
 import com.opencode.minikeyvault.utils.ImageFactory;
 import com.opencode.minikeyvault.utils.ImageFactory.FontAwesome;
-import com.opencode.minikeyvault.viewmodel.KeyDataViewModel;
+import com.opencode.minikeyvault.viewmodel.MainViewModel;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.binding.Bindings;
@@ -14,7 +14,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
-/** class: KeyDataInsUpdView. <br/>
+/** class: CrudDlgView. <br/>
  * @author Henry Navarro <br/><br/>
  *          <u>Cambios</u>:<br/>
  *          <ul>
@@ -22,9 +22,9 @@ import javafx.stage.Stage;
  *          </ul>
  * @version 1.0
  */
-public class KeyDataInsUpdView implements Initializable {
+public class CrudDlgView implements Initializable {
 
-    private final KeyDataViewModel viewModel = KeyDataViewModel.getInstance();
+    private final MainViewModel viewModel = MainViewModel.getInstance();
 
     @FXML BorderPane bpnPrincipal;
 

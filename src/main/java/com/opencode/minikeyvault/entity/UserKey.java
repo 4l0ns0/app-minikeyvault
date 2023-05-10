@@ -1,4 +1,4 @@
-package com.opencode.minikeyvault.model.entity;
+package com.opencode.minikeyvault.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

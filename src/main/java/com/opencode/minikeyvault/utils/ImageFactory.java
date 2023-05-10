@@ -7,6 +7,8 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.text.Font;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
@@ -19,11 +21,8 @@ import org.apache.commons.lang3.StringUtils;
  * @version 1.0
  */
 @Slf4j
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ImageFactory {
-
-    private ImageFactory() {
-        throw new IllegalStateException(ImageFactory.class.getName());
-    }
 
     /**
      * class: FontAwesome. <br/>
@@ -47,6 +46,7 @@ public class ImageFactory {
         FA_TOGGLE_ON('\uf205'),
         FA_TOGGLE_OFF('\uf204'),
         FA_SIGN_OUT('\uf08b'),
+        FA_SIGN_IN('\uf090'),
         FA_DATABASE('\uf1c0'),
         FA_QUESTION_CIRCLE_O('\uf29c');
 

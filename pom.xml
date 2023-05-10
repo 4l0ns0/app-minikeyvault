@@ -4,7 +4,7 @@
 
 	<groupId>com.opencode</groupId>
 	<artifactId>minikeyvault</artifactId>
-	<version>0.8.0</version>
+	<version>1.0.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>Mini Key Vault (mkv)</name>
 	<url>https://github.com/4l0ns0/app-minikeyvault/tree/main</url>
@@ -15,7 +15,7 @@
 		<launcherClass>${basePackage}.Launcher</launcherClass>
 		<initializerClass>${basePackage}.Initializer</initializerClass>
 		<moduleName>${basePackage}</moduleName>
-		<lombokVersion>1.18.22</lombokVersion>
+		<lombokVersion>1.18.26</lombokVersion>
 		
 		<checkstyleVersion>3.1.2</checkstyleVersion>
 		<pmdVersion>3.15.0</pmdVersion>
@@ -25,12 +25,14 @@
 		<dependency>
 			<groupId>org.openjfx</groupId>
 			<artifactId>javafx-controls</artifactId>
-			<version>11.0.2</version>
+<!--			<version>11.0.2</version>-->
+			<version>19.0.2.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.openjfx</groupId>
 			<artifactId>javafx-fxml</artifactId>
-			<version>11.0.2</version>
+<!--			<version>11.0.2</version>-->
+			<version>19.0.2.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
@@ -41,27 +43,27 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-simple</artifactId>
-			<version>1.7.32</version>
+			<version>2.0.5</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>1.7.32</version>
+			<version>2.0.5</version>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-core</artifactId>
-			<version>2.12.4</version>
+			<version>2.14.2</version>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
-			<version>2.12.4</version>
+			<version>2.14.2</version>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-annotations</artifactId>
-			<version>2.12.4</version>
+			<version>2.14.2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
@@ -71,8 +73,23 @@
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
-			<version>1.4.199</version>
+			<version>2.1.214</version>
 		</dependency>
+
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
+			<version>5.9.2</version>
+			<scope>test</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-api</artifactId>
+			<version>5.9.2</version>
+			<scope>test</scope>
+		</dependency>
+		
 	</dependencies>
 
 	<build>
@@ -97,7 +114,8 @@
 				<artifactId>maven-resources-plugin</artifactId>
 				<version>3.2.0</version>
 				<configuration>
-					<propertiesEncoding>ISO-8859-1</propertiesEncoding>
+					<!-- <propertiesEncoding>ISO-8859-1</propertiesEncoding> -->
+					<propertiesEncoding>UTF-8</propertiesEncoding>
 					<resources>
 						<resource>
 							<directory>src/main/resources</directory>
@@ -134,6 +152,7 @@
 					</execution>
 				</executions>
 			</plugin>
+			<!--
 			<plugin>
 				<groupId>org.openjfx</groupId>
 				<artifactId>javafx-maven-plugin</artifactId>
@@ -146,6 +165,19 @@
 						</configuration>
 					</execution>
 				</executions>
+			</plugin>
+			-->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.22.2</version>
+				<dependencies>
+					<dependency>
+						<groupId>org.junit.jupiter</groupId>
+						<artifactId>junit-jupiter-engine</artifactId>
+						<version>5.8.2</version>
+					</dependency>
+				</dependencies>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -176,6 +208,11 @@
 					</dependency>
                 </dependencies>
 			</plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.7</version>
+			</plugin>
 		</plugins>
 	</build>
 
@@ -201,6 +238,7 @@
 				<configuration>
 					<linkXRef>false</linkXRef>
 				</configuration>
+				<!--
 				<reportSets>
 					<reportSet>
 						<reports>
@@ -209,6 +247,25 @@
 						</reports>
 					</reportSet>
 				</reportSets>
+				-->
+			</plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.7</version>
+				<configuration>
+					<destFile>${project.basedir}/target/jacoco.exe</destFile>
+					<append>true</append>
+				</configuration>
+				<!--
+				<reportSets>
+					<reportSet>
+						<reports>
+							<report>report</report>
+						</reports>
+					</reportSet>
+				</reportSets>
+				-->
 			</plugin>
 		</plugins>
 	</reporting>

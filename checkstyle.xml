@@ -302,7 +302,7 @@
 		<module name="SuppressionXpathFilter">
 			<property name="file"
 				value="checkstyle-supressions.xml" />
-			<property name="optional" value="true" />
+			
 		</module>
 	</module>
 	<module name="BeforeExecutionExclusionFileFilter">
@@ -311,7 +311,7 @@
 	<module name="SuppressionFilter">
 		<property name="file"
 			value="checkstyle-supressions.xml" />
-		<property name="optional" value="true" />
+		
 	</module>
 	<module name="FileTabCharacter">
 		<property name="eachLine" value="true" />

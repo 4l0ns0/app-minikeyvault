@@ -16,10 +16,13 @@ buildNumber.properties
 .classpath
 .project
 
-# archivos de base de datos (H2)
-*.db
+# IDE
+.idea
 
 # archivo de configuracion del sistema
-mkv.properties
+._mkv
 app64.ico
 mkv.ico
+minikeyvault.iml
+keystore.mv.db
+keystore.trace.db

@@ -1,4 +1,4 @@
-package com.opencode.minikeyvault.view.dto;
+package com.opencode.minikeyvault.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

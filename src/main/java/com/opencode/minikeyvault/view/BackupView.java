@@ -1,6 +1,6 @@
 package com.opencode.minikeyvault.view;
 
-import com.opencode.minikeyvault.model.db.Datasource;
+import com.opencode.minikeyvault.repository.db.Datasource;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
